@@ -1,15 +1,32 @@
+/**
+ * Represents a Resource Manager that takes care of getting resources
+ * This class provides methods to retrieve an {@code Optional Stage} value to load
+ * <p>Example usage:</p>
+ * <pre>
+ * ResourceManager manager = new ResourceManager("/scenes/default.scene.fxml", this, stage);
+ * manager.loadStage().ifPresent(Stage::show);
+ * </pre>
+ * @author Luka Ivelić
+ * @version 1.0
+ * @since 2025-02-04
+ */
+
 package handlers;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-
 import java.io.IOException;
 import java.util.Optional;
 
 public class ResourceManager{
-    public ResourceManager() {}
 
+    /**
+     * Constructs a new {@code ResourceManager} with specified resourceName, sender and stage.
+     * @param resourceName the relative path to the resource including the filename
+     * @param sender the object instance which calls the ResourceManager constructor
+     * @param stage the JavaFX Stage object instance
+     */
     public ResourceManager(String resourceName, Object sender, Stage stage) {
         setResourceName(resourceName);
         setSender(sender);
@@ -17,14 +34,30 @@ public class ResourceManager{
     }
 
     private String resourceName;
+    /**
+     * Saves the relative path of a resource
+     * @param resourceName the relative path to the resource including the filename
+     */
     private void setResourceName(String resourceName) {this.resourceName = resourceName;}
 
     private Object sender;
+    /**
+     * Saves the object instance which calls the {@code setSender} method
+     * @param sender the relative path to the resource including the filename
+     */
     private void setSender(Object sender) {this.sender = sender;}
 
     private Stage stage;
+    /**
+     * Saves the stage instance which is used to load the JavaFX application
+     * @param stage the stage instance
+     */
     private void setStage(Stage stage) {this.stage = stage;}
 
+    /**
+     * Returns a modified string, converting {@code /scenes/default.scene.fxml} to {@code Default Scene}
+     * @return a modified string after applying regex
+     */
     private static String createTitle(String rawTitle){
         rawTitle = rawTitle
                     .replaceAll("/controllers/|/scenes/|\\.fxml", "")
@@ -36,6 +69,10 @@ public class ResourceManager{
         return String.join(" ", rawTitleParts);
     }
 
+    /**
+     * Returns an {@code Optional<Stage>} which has a loaded object ready for use or {@code Optional.empty()}
+     * @return an optional stage object to use
+     */
     public static Optional<Stage> loadStage (String resourceName, Object sender, Stage stage) {
         try{
             FXMLLoader fxmlLoader = new FXMLLoader(sender.getClass().getResource(resourceName));
@@ -48,6 +85,10 @@ public class ResourceManager{
         }
     }
 
+    /**
+     * Returns an {@code Optional<Stage>} which has a loaded object ready for use or {@code Optional.empty()}
+     * @return an optional stage object to use
+     */
     public Optional<Stage> loadStage () {
         return loadStage(resourceName, sender, stage);
     }
