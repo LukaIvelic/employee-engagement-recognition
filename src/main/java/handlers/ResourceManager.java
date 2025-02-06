@@ -7,14 +7,14 @@
  * manager.loadStage().ifPresent(Stage::show);
  * </pre>
  * @author Luka Ivelić
- * @version 1.0
+ * @version 1.0.1
  * @since 2025-02-04
  */
-
 package handlers;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import java.io.IOException;
 import java.util.Optional;
@@ -91,5 +91,27 @@ public class ResourceManager{
      */
     public Optional<Stage> loadStage () {
         return loadStage(resourceName, sender, stage);
+    }
+
+    /**
+     * Returns an {@code Optional<Pane>} which has a loaded object ready for use or {@code Optional.empty()}
+     * @return an optional pane object to use
+     */
+    public static Optional<Pane> loadContent (String resourceName, Object sender) {
+        try{
+            FXMLLoader fxmlLoader = new FXMLLoader(sender.getClass().getResource(resourceName));
+            Pane root = fxmlLoader.load();
+            return Optional.of(root);
+        }catch(IOException e){
+            return Optional.empty();
+        }
+    }
+
+    /**
+     * Returns an {@code Optional<Pane>} which has a loaded object ready for use or {@code Optional.empty()}
+     * @return an optional pane object to use
+     */
+    public Optional<Pane> loadContent () {
+        return loadContent(resourceName, sender);
     }
 }
