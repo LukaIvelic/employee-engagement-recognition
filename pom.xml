@@ -41,11 +41,10 @@
             <scope>test</scope>
         </dependency>
 
-        <!--Table-saw dependencies-->
         <dependency>
-            <groupId>tech.tablesaw</groupId>
-            <artifactId>tablesaw-core</artifactId>
-            <version>0.34.1</version>
+            <groupId>org.mongodb</groupId>
+            <artifactId>mongodb-driver-sync</artifactId>
+            <version>5.1.0</version>
         </dependency>
     </dependencies>
 

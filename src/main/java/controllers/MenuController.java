@@ -29,9 +29,20 @@ public class MenuController {
     public void changeContentProviderContent(ActionEvent event) {
         MenuItem sender = (MenuItem) event.getSource();
         String filename = createFilename(sender.getText());
+        EmployeeEngagementRecognition.primaryStage.setTitle("Employee Engagement Recognition | " + sender.getText());
         Pane rootPane = (Pane)EmployeeEngagementRecognition.primaryStage.getScene().getRoot();
         Pane contentPane =  (Pane)rootPane.getChildren().getLast();
         ResourceManager.loadContent(filename, this).ifPresent(content -> {
+            contentPane.getChildren().clear();
+            contentPane.getChildren().add(content);
+        });
+    }
+
+    public void changeContentProviderToOverview() {
+        EmployeeEngagementRecognition.primaryStage.setTitle("Employee Engagement Recognition | Overview");
+        Pane rootPane = (Pane)EmployeeEngagementRecognition.primaryStage.getScene().getRoot();
+        Pane contentPane =  (Pane)rootPane.getChildren().getLast();
+        ResourceManager.loadContent("/scenes/overview.scene.fxml", this).ifPresent(content -> {
             contentPane.getChildren().clear();
             contentPane.getChildren().add(content);
         });

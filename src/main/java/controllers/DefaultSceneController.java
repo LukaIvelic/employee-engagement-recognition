@@ -7,10 +7,16 @@
 
 package controllers;
 
+import handlers.ResourceManager;
 import javafx.fxml.FXML;
 import javafx.scene.layout.Pane;
 
 public class DefaultSceneController {
     @FXML
     public Pane contentProvider;
+
+    public void initialize() {
+        contentProvider.getChildren().clear();
+        ResourceManager.loadContent("/scenes/overview.scene.fxml", this).ifPresent(contentProvider.getChildren()::add);
+    }
 }

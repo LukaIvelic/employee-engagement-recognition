@@ -16,8 +16,14 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import launch.EmployeeEngagementRecognition;
+
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.net.URL;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.Properties;
 
 public class ResourceManager{
 
@@ -113,5 +119,32 @@ public class ResourceManager{
      */
     public Optional<Pane> loadContent () {
         return loadContent(resourceName, sender);
+    }
+
+    public static void loadOverviewContent (Object sender) {
+        loadContent("/scenes/overview.scene.fxml", sender).ifPresent(content -> {
+            EmployeeEngagementRecognition.primaryStage.setTitle("Employee Engagement Recognition | Overview");
+            Pane rootPane = (Pane)EmployeeEngagementRecognition.primaryStage.getScene().getRoot();
+            Pane contentPane =  (Pane)rootPane.getChildren().getLast();
+            contentPane.getChildren().clear();
+            contentPane.getChildren().add(content);
+        });
+    }
+
+    public static Properties loadProperties(String propertiesName, Object sender) {
+        URL resourceURL = sender.getClass().getResource(propertiesName);
+        Objects.requireNonNull(resourceURL);
+
+        try(FileInputStream fis = new FileInputStream(resourceURL.getFile())){
+            Properties properties = new Properties();
+            properties.load(fis);
+            return properties;
+        }catch(IOException | NullPointerException e){
+            return new Properties();
+        }
+    }
+
+    public Properties loadProperties() {
+        return loadProperties(resourceName, sender);
     }
 }

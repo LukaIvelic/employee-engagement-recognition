@@ -29,9 +29,10 @@ public class EmployeeEngagementRecognition extends Application {
      */
     @Override
     public void start(Stage stage) {
-        primaryStage = stage; //NOSONAR
         ResourceManager manager = new ResourceManager("/scenes/default.scene.fxml", this, stage);
         manager.loadStage().ifPresent(Stage::show);
+        primaryStage = stage; //NOSONAR
+        primaryStage.setTitle("Employee Engagement Recognition | Overview");
     }
 
     /**
