@@ -7,9 +7,10 @@
  * manager.loadStage().ifPresent(Stage::show);
  * </pre>
  * @author Luka Ivelić
- * @version 1.0.1
+ * @version 1.0.2
  * @since 2025-02-04
  */
+
 package handlers;
 
 import javafx.fxml.FXMLLoader;
@@ -121,6 +122,9 @@ public class ResourceManager{
         return loadContent(resourceName, sender);
     }
 
+    /**
+     * Uses {@code loadContent} method to load overview content Pane, created to reduce boilerplate code
+     */
     public static void loadOverviewContent (Object sender) {
         loadContent("/scenes/overview.scene.fxml", sender).ifPresent(content -> {
             EmployeeEngagementRecognition.primaryStage.setTitle("Employee Engagement Recognition | Overview");
@@ -131,6 +135,10 @@ public class ResourceManager{
         });
     }
 
+    /**
+     * Loads properties by passing property name to the method
+     * @return Properties
+     */
     public static Properties loadProperties(String propertiesName, Object sender) {
         URL resourceURL = sender.getClass().getResource(propertiesName);
         Objects.requireNonNull(resourceURL);
@@ -144,6 +152,10 @@ public class ResourceManager{
         }
     }
 
+    /**
+     * Loads properties by passing property name to the method
+     * @return Properties
+     */
     public Properties loadProperties() {
         return loadProperties(resourceName, sender);
     }

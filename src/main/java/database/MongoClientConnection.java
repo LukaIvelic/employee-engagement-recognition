@@ -1,3 +1,11 @@
+/**
+ * Represents a MongoClientConnection class which is used to establish a connection with the MongoDB with given parameters in the resource folder
+ * This class provides a method to get the MongoClient object
+ * @author Luka Ivelić
+ * @version 1.0
+ * @since 2025-02-09
+ */
+
 package database;
 
 import com.mongodb.ConnectionString;
@@ -11,6 +19,9 @@ import handlers.ResourceManager;
 import java.util.Properties;
 
 public class MongoClientConnection {
+    /**
+     * Provides a MongoClient to establish a connection with the MongoDB database
+     */
     public MongoClient getMongoClient() throws NullPointerException {
         Properties properties =  ResourceManager.loadProperties("/properties/database.properties", this);
 

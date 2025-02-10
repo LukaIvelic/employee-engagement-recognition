@@ -37,14 +37,4 @@ public class MenuController {
             contentPane.getChildren().add(content);
         });
     }
-
-    public void changeContentProviderToOverview() {
-        EmployeeEngagementRecognition.primaryStage.setTitle("Employee Engagement Recognition | Overview");
-        Pane rootPane = (Pane)EmployeeEngagementRecognition.primaryStage.getScene().getRoot();
-        Pane contentPane =  (Pane)rootPane.getChildren().getLast();
-        ResourceManager.loadContent("/scenes/overview.scene.fxml", this).ifPresent(content -> {
-            contentPane.getChildren().clear();
-            contentPane.getChildren().add(content);
-        });
-    }
 }

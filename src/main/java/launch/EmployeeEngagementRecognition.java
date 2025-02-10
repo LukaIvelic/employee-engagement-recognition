@@ -9,7 +9,7 @@
  * }
  * </pre>
  * @author Luka Ivelić
- * @version 1.0.1
+ * @version 1.0.2
  * @since 2025-02-04
  */
 

@@ -1,12 +1,19 @@
+/**
+ * Represents an Employee class that represents data for storing into the database
+ * This class provides methods to manipulate database documents
+ * @author Luka Ivelić
+ * @version 1.0
+ * @since 2025-02-09
+ */
+
 package records;
 
 import records.interfaces.DefaultDataStructure;
 import org.bson.Document;
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.time.LocalDate;
 
-public record Employee(BigInteger employeeId, String firstName, String lastName, Character gender, LocalDate dateOfBirth, BigDecimal salary, String profession) implements DefaultDataStructure {
+public record Employee(String employeeId, String firstName, String lastName, Character gender, LocalDate dateOfBirth, BigDecimal salary, String profession) implements DefaultDataStructure {
 
     private static final String firstNameField = "firstName";
     private static final String lastNameField = "lastName";
@@ -26,7 +33,7 @@ public record Employee(BigInteger employeeId, String firstName, String lastName,
     }
 
     @Override
-    public Document insertDocument() {
+    public Document getDocument() {
         return toDocument();
     }
 
