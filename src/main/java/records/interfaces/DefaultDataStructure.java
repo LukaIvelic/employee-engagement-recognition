@@ -23,4 +23,8 @@ public interface DefaultDataStructure {
      * Forces the implementer class or interface to have a method to delete a document
      */
     Document deleteDocument(String condition);
+
+    String toString();
+
+
 }

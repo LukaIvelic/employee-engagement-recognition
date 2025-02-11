@@ -15,9 +15,14 @@ package database;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Filters;
 import database.enums.DatabaseInfo;
 import database.interfaces.DefaultDatabaseStructure;
 import org.bson.Document;
+import org.bson.types.ObjectId;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class DatabaseManager implements DefaultDatabaseStructure {
 
@@ -51,19 +56,26 @@ public class DatabaseManager implements DefaultDatabaseStructure {
     /**
      * Updates an existing document in the collection if there is a given document, update document and a collection name
      */
-    public void updateDocument(Document query, Document update, String collectionName) {
+    public void updateDocument(String objectID, Document update, String collectionName) {
         databaseCondition = DatabaseInfo.UNAVAILABLE;
         MongoCollection<Document> collection = database.getCollection(collectionName);
-        collection.updateOne(query, update);
+
+        Document updateDocument = new Document("$set", update);
+
+        collection.updateOne(
+                Filters.eq("_id", new ObjectId(objectID)),
+                updateDocument
+        );
     }
+
 
     /**
      * Deletes a document from the collection if there is a given document and a collection name
      */
-    public void deleteDocument(Document query, String collectionName) {
+    public void deleteDocument(Document toDelete, String collectionName) {
         databaseCondition = DatabaseInfo.UNAVAILABLE;
         MongoCollection<Document> collection = database.getCollection(collectionName);
-        collection.deleteOne(query);
+        collection.deleteOne(toDelete);
     }
 
     /**
@@ -72,5 +84,19 @@ public class DatabaseManager implements DefaultDatabaseStructure {
     public MongoCollection<Document> getCollection(String collectionName) {
         databaseCondition = DatabaseInfo.UNAVAILABLE;
         return database.getCollection(collectionName);
+    }
+
+    public List<String> getAllCollections() {
+        List<String> collections = null;
+        try {
+            databaseCondition = DatabaseInfo.UNAVAILABLE;
+            collections = new ArrayList<>();
+            database.listCollectionNames().into(collections);
+        } catch (Exception e) {
+            databaseCondition = DatabaseInfo.ERROR;
+        } finally {
+            databaseCondition = DatabaseInfo.AVAILABLE;
+        }
+        return collections;
     }
 }

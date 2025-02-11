@@ -11,7 +11,7 @@
       <MenuItem mnemonicParsing="false" onAction="#changeContentProviderContent" text="Delete Record" />
     </Menu>
     <Menu mnemonicParsing="false" text="View">
-      <MenuItem mnemonicParsing="false" onAction="#changeContentProviderContent" text="All Employees" />
+      <MenuItem mnemonicParsing="false" onAction="#changeContentProviderContent" text="Preview Records" />
         <MenuItem mnemonicParsing="false" onAction="#changeContentProviderContent" text="Overview" />
       <MenuItem mnemonicParsing="false" onAction="#changeContentProviderContent" text="Engagement" />
       <MenuItem mnemonicParsing="false" onAction="#changeContentProviderContent" text="Leaderboard" />

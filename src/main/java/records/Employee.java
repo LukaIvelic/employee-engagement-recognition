@@ -55,4 +55,15 @@ public record Employee(String employeeId, String firstName, String lastName, Cha
     public Document deleteDocument(String condition) {
         return Document.parse(condition);
     }
+
+    @Override
+    public String toString() {
+        return "Employee[" +
+            firstName + ", " +
+            lastName + ", " +
+            gender + ", " +
+            dateOfBirth + ", " +
+            salary + ", " +
+            profession + "]";
+    }
 }

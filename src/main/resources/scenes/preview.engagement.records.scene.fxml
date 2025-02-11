@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.Pane?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="414.0" prefWidth="999.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.PreviewEngagementRecordsController">
+   <children>
+      <TableView fx:id="engagementTable" editable="true" prefHeight="414.0" prefWidth="1000.0">
+         <columns>
+            <TableColumn fx:id="idColumn" prefWidth="314.0" text="Object ID" />
+            <TableColumn fx:id="personIdColumn" prefWidth="332.0" text="Person ID" />
+            <TableColumn fx:id="timeAtWorkColumn" prefWidth="353.0" text="Time at Work" />
+         </columns>
+      </TableView>
+   </children>
+</Pane>
