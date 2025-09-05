@@ -36,7 +36,7 @@ public class InformationManager {
     public static Boolean checkEmployeeRecordInformationValidity(List<Node> information) {
         boolean isValid = true;
         for(Node node : information) {
-            if(node instanceof TextField textField && Boolean.FALSE.equals(isTextFieldValid(textField))) {
+            if(node instanceof TextField textField && Boolean.FALSE.equals(isTextFieldValid(textField, false))) {
                 isValid = false;
             }
             if(node instanceof ComboBox<?> comboBox && Boolean.FALSE.equals(isComboBoxValid(comboBox))) {
@@ -53,10 +53,14 @@ public class InformationManager {
      * Checks the validity of the text
      * @param textField a JavaFX component with text
      */
-    public static Boolean isTextFieldValid(TextField textField) {
+    public static Boolean isTextFieldValid(TextField textField, Boolean allowMixed) {
         String text = textField.getText();
         try {
-            return text.matches("^\\s*(?:[\\p{L},.\\s]+|\\d+[,. ]*)\\s*$");
+            if(Boolean.TRUE.equals(allowMixed)) {
+                return text.matches("^\\s*[\\p{L}\\d,.\\s]+\\s*$");
+            }else{
+                return text.matches("^\\s*(?:[\\p{L},.\\s]+|\\d+[,. ]*)\\s*$");
+            }
         } catch (Exception e) {
             return Boolean.FALSE;
         }
@@ -84,5 +88,15 @@ public class InformationManager {
         } catch (Exception e) {
             return Boolean.FALSE;
         }
+    }
+
+    public static Boolean checkEngagementRecordInformationValidity(List<TextField> information) {
+        boolean isValid = true;
+        for(TextField textField : information) {
+            if(Boolean.FALSE.equals(isTextFieldValid(textField, true))) {
+                isValid = false;
+            }
+        }
+        return isValid;
     }
 }

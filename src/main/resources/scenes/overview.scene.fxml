@@ -1,15 +1,69 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="576.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
-   <children>
-      <Label layoutX="55.0" layoutY="31.0" prefHeight="46.0" prefWidth="698.0" text="Company Engagement Recognition">
-         <font>
-            <Font name="System Bold" size="36.0" />
-         </font>
-      </Label>
-   </children>
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="576.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.overview.OverviewSceneController">
+   <Label layoutX="55.0" layoutY="31.0" prefHeight="46.0" prefWidth="698.0" text="Company Engagement Recognition">
+      <font>
+         <Font name="System Bold" size="36.0" />
+      </font>
+   </Label>
+   <Label layoutX="55.0" layoutY="107.0" prefHeight="22.0" prefWidth="102.0" text="Top employees">
+      <font>
+         <Font name="System Bold" size="12.0" />
+      </font>
+   </Label>
+   <TableView fx:id="topEmployeeTable" layoutX="55.0" layoutY="149.0" prefHeight="124.0" prefWidth="393.0">
+     <columns>
+       <TableColumn fx:id="firstNameColumnTopEmployees" prefWidth="132.0" text="First Name" />
+       <TableColumn fx:id="lastNameColumnTopEmployees" prefWidth="124.0" text="Last Name" />
+         <TableColumn fx:id="hoursSpentColumnTopEmployees" prefWidth="119.0" text="Hours Spent" />
+     </columns>
+   </TableView>
+   <Label layoutX="479.0" layoutY="295.0" prefHeight="22.0" prefWidth="181.0" text="Ongoing Bonuses Coefficient">
+      <font>
+         <Font name="System Bold" size="12.0" />
+      </font>
+   </Label>
+   <Label layoutX="479.0" layoutY="317.0" prefHeight="22.0" prefWidth="166.0" text="[1.05, 1.075, 1.085]" textFill="#00ab17" />
+   <Label layoutX="479.0" layoutY="351.0" prefHeight="22.0" prefWidth="181.0" text="Average total work hours">
+      <font>
+         <Font name="System Bold" size="12.0" />
+      </font>
+   </Label>
+   <Label fx:id="totalWorkHours" layoutX="479.0" layoutY="373.0" prefHeight="22.0" prefWidth="166.0" text="-" textFill="#dd7a00" />
+   <Label layoutX="479.0" layoutY="107.0" prefHeight="22.0" prefWidth="222.0" text="Work burnout employees">
+      <font>
+         <Font name="System Bold" size="12.0" />
+      </font>
+   </Label>
+   <TableView fx:id="burnoutEmployeeTable" layoutX="479.0" layoutY="149.0" prefHeight="124.0" prefWidth="393.0">
+      <columns>
+         <TableColumn fx:id="firstNameColumnBurnouts" prefWidth="132.0" text="First Name" />
+         <TableColumn fx:id="lastNameColumnBurnouts" prefWidth="124.0" text="Last Name" />
+         <TableColumn fx:id="hoursSpentColumnBurnouts" prefWidth="122.0" text="Hours Spent" />
+      </columns>
+   </TableView>
+   <BarChart fx:id="workPerEmployeeChart" alternativeRowFillVisible="false" layoutX="21.0" layoutY="317.0" prefHeight="201.0" prefWidth="352.0" verticalGridLinesVisible="false">
+     <xAxis>
+       <CategoryAxis prefHeight="11.0" prefWidth="352.0" side="LEFT" tickLabelsVisible="false" />
+     </xAxis>
+     <yAxis>
+       <NumberAxis autoRanging="false" minorTickLength="10.0" side="LEFT" tickUnit="10.0" upperBound="400.0" />
+     </yAxis>
+   </BarChart>
+   <Label layoutX="55.0" layoutY="295.0" prefHeight="22.0" prefWidth="299.0" text="Employee engagement overview">
+      <font>
+         <Font name="System Bold" size="12.0" />
+      </font>
+   </Label>
+   <ToggleButton layoutX="783.0" layoutY="493.0" mnemonicParsing="false" onAction="#autoRefresh" text="Auto Refresh" />
 </Pane>

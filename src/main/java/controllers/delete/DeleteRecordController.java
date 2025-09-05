@@ -1,11 +1,18 @@
-package controllers;
+/**
+ * Represents a DeleteRecordController that takes care of deleting records from the database
+ * This class provides methods that take care of transforming data into queries from JavaFX GUI
+ * @author Luka Ivelić
+ * @version 1.0
+ * @since 2025-02-12
+ */
+
+package controllers.delete;
 
 import com.mongodb.client.MongoCollection;
 import database.DatabaseManager;
 import database.enums.DatabaseInfo;
 import database.enums.Databases;
 import handlers.ResourceManager;
-import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -28,10 +35,16 @@ public class DeleteRecordController {
     @FXML
     private Label errorLabel;
 
+    /**
+     * Calls the fillCollectionComboBox method
+     */
     public void initialize() {
         fillCollectionComboBox();
     }
 
+    /**
+     * Loads data from the database and displays it in JSON format in the JavaFX GUI
+     */
     public void previewObject(){
         DatabaseManager databaseManager = new DatabaseManager(Databases.EMPLOYEE_ENGAGEMENT_RECOGNITION.toString());
         try{
@@ -42,6 +55,7 @@ public class DeleteRecordController {
             List<Document> documents = new ArrayList<>();
 
             if(collectionComboBox.getSelectionModel().getSelectedItem() == null){
+                previewLabel.setText("");
                 errorLabel.setText("You haven't selected a collection");
                 return;
             }else{
@@ -58,6 +72,7 @@ public class DeleteRecordController {
                 }
             }
             if(Boolean.FALSE.equals(hasDocument)){
+                previewLabel.setText("");
                 errorLabel.setText("There isn't no such record in the database");
             }
 
@@ -72,6 +87,9 @@ public class DeleteRecordController {
         }
     }
 
+    /**
+     * Fills the collectionComboBox with the names of all the collections in the database
+     */
     public void fillCollectionComboBox() {
         Thread myThread = new Thread(()->{
             DatabaseManager databaseManager = new DatabaseManager(Databases.EMPLOYEE_ENGAGEMENT_RECOGNITION.toString());
@@ -91,6 +109,9 @@ public class DeleteRecordController {
         myThread.start();
     }
 
+    /**
+     * Deletes a record from the collection based on the ID given
+     */
     public void deleteRecord() {
         if(collectionComboBox.getSelectionModel().getSelectedItem() == null){
             errorLabel.setText("You haven't selected a collection");
@@ -111,6 +132,9 @@ public class DeleteRecordController {
         ResourceManager.loadOverviewContent(this);
     }
 
+    /**
+     * Loads overview.scene.fxml file and displays it after clicking the Cancel button
+     */
     public void cancelRecordDelete() {
         ResourceManager.loadOverviewContent(this);
     }

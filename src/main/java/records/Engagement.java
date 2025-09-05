@@ -7,12 +7,14 @@ import java.time.Duration;
 
 public record Engagement(String objectId, String personId, Duration timeAtWork) implements DefaultDataStructure {
 
-    private static final String timeAtWorkField = "timeAtWork";
+    private static final String personIdField = "personId";
+    private static final String timeAtWorkField = "timeWorking";
 
     @Override
     public Document getDocument() {
         return new Document()
-                .append(timeAtWorkField, timeAtWork);
+                .append(personIdField, personId)
+                .append(timeAtWorkField, timeAtWork.toHours());
     }
 
     @Override

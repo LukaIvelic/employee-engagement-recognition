@@ -8,17 +8,20 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="576.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.PreviewAllController">
-   <children>
-      <Label layoutX="55.0" layoutY="31.0" prefHeight="46.0" prefWidth="698.0" text="Preview Documents">
-         <font>
-            <Font name="System Bold" size="36.0" />
-         </font>
-      </Label>
-      <Button layoutX="222.0" layoutY="103.0" mnemonicParsing="false" onAction="#fetchRecords" prefHeight="25.0" prefWidth="130.0" text="Fetch Records" />
-      <ComboBox fx:id="collectionComboBox" layoutX="55.0" layoutY="103.0" onMouseClicked="#setSelectedCollection" prefHeight="25.0" prefWidth="153.0" promptText="Select Collection" />
-      <ProgressIndicator fx:id="progressIndicator" layoutX="400.0" layoutY="90.0" progress="0.0" scaleX="0.5" scaleY="0.5" scaleZ="0.5" visible="false" />
-      <Separator layoutX="21.0" layoutY="160.0" prefHeight="0.0" prefWidth="958.0" />
-      <Pane fx:id="previewContentPane" layoutY="186.0" prefHeight="391.0" prefWidth="1000.0" />
-   </children>
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="576.0"
+      prefWidth="1000.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="controllers.preview.PreviewAllController">
+   <Label layoutX="55.0" layoutY="31.0" prefHeight="46.0" prefWidth="698.0" text="Preview Documents">
+      <font>
+         <Font name="System Bold" size="36.0"/>
+      </font>
+   </Label>
+   <Button layoutX="222.0" layoutY="103.0" mnemonicParsing="false" onAction="#fetchRecords" prefHeight="25.0"
+           prefWidth="130.0" text="Fetch Records"/>
+   <ComboBox fx:id="collectionComboBox" layoutX="55.0" layoutY="103.0" prefHeight="25.0" prefWidth="153.0"
+             promptText="Select Collection"/>
+   <ProgressIndicator layoutX="400.0" layoutY="90.0" progress="0.0" scaleX="0.5" scaleY="0.5" scaleZ="0.5"
+                      visible="false"/>
+   <Separator layoutX="21.0" layoutY="160.0" prefHeight="0.0" prefWidth="958.0"/>
+   <Pane fx:id="previewContentPane" layoutY="186.0" prefHeight="391.0" prefWidth="1000.0"/>
 </Pane>

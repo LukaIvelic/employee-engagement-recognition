@@ -110,6 +110,8 @@ public class ResourceManager{
             Pane root = fxmlLoader.load();
             return Optional.of(root);
         }catch(IOException e){
+            e.printStackTrace();
+            System.out.println(e.getMessage());
             return Optional.empty();
         }
     }

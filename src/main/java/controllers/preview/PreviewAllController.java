@@ -6,7 +6,7 @@
  * @since 2025-02-09
  */
 
-package controllers;
+package controllers.preview;
 
 import database.DatabaseManager;
 import database.enums.DatabaseInfo;
@@ -20,11 +20,6 @@ import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
 
 public class PreviewAllController {
-
-    private static String selectedCollection = "";
-
-    @FXML
-    private ProgressIndicator progressIndicator;
     @FXML
     private ComboBox<String> collectionComboBox;
     @FXML
@@ -55,17 +50,10 @@ public class PreviewAllController {
         myThread.start();
     }
 
-    public synchronized void setSelectedCollection() {
-        if(collectionComboBox.getSelectionModel().getSelectedItem() != null) {
-            selectedCollection = collectionComboBox.getSelectionModel().getSelectedItem();
-        }
-    }
-
     public void fetchRecords(){
         if(collectionComboBox.getSelectionModel().getSelectedItem() == null) {
             return;
         }
-
         ResourceManager.loadContent(filename(collectionComboBox.getSelectionModel().getSelectedItem()), this).ifPresent(previewContentPane.getChildren()::add);
     }
 

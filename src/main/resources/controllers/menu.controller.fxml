@@ -15,6 +15,5 @@
         <MenuItem mnemonicParsing="false" onAction="#changeContentProviderContent" text="Overview" />
       <MenuItem mnemonicParsing="false" onAction="#changeContentProviderContent" text="Engagement" />
       <MenuItem mnemonicParsing="false" onAction="#changeContentProviderContent" text="Leaderboard" />
-      <MenuItem mnemonicParsing="false" onAction="#changeContentProviderContent" text="Special Bonuses" />
     </Menu>
 </MenuBar>

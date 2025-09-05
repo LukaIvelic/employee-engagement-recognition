@@ -1,15 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.chart.PieChart?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="576.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
-   <children>
-      <Label layoutX="55.0" layoutY="31.0" prefHeight="46.0" prefWidth="698.0" text="Engagement">
-         <font>
-            <Font name="System Bold" size="36.0" />
-         </font>
-      </Label>
-   </children>
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="576.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.engagement.EngagementSceneController">
+   <Label layoutX="55.0" layoutY="31.0" prefHeight="46.0" prefWidth="698.0" text="Engagement">
+      <font>
+         <Font name="System Bold" size="36.0" />
+      </font>
+   </Label>
+   <Label layoutX="55.0" layoutY="107.0" prefHeight="17.0" prefWidth="213.0" text="People in the demotion zone">
+      <font>
+         <Font name="System Bold" size="12.0" />
+      </font>
+   </Label>
+   <Label fx:id="demotionZoneLabel" alignment="TOP_LEFT" layoutX="55.0" layoutY="124.0" prefHeight="35.0" prefWidth="446.0" wrapText="true" />
+   <Separator layoutX="14.0" layoutY="182.0" prefHeight="0.0" prefWidth="975.0" />
+   <PieChart fx:id="pieChart" layoutX="55.0" layoutY="207.0" prefHeight="283.0" prefWidth="232.0" />
+   <Label alignment="TOP_LEFT" layoutX="376.0" layoutY="226.0" prefHeight="42.0" prefWidth="341.0" text="Employees under 100 hours spent working in the firm won't be eligable for bonuses and company policy off-days." textFill="#d00000" wrapText="true">
+      <font>
+         <Font name="System Bold Italic" size="12.0" />
+      </font>
+   </Label>
+   <Label alignment="TOP_LEFT" layoutX="376.0" layoutY="286.0" prefHeight="53.0" prefWidth="341.0" text="Employees between 100 and 200 hours spent working in the will only be eligable for company policy off-days and they won't be eligable for bonuses." textFill="#ff960c" wrapText="true">
+      <font>
+         <Font name="System Bold Italic" size="12.0" />
+      </font>
+   </Label>
+   <Label alignment="TOP_LEFT" layoutX="376.0" layoutY="360.0" prefHeight="53.0" prefWidth="341.0" text="Employees over 200 hours will be eligable for both bonuses and company-policy off-days as well as KFC coupons" textFill="#00ab17" wrapText="true">
+      <font>
+         <Font name="System Bold Italic" size="12.0" />
+      </font>
+   </Label>
 </Pane>

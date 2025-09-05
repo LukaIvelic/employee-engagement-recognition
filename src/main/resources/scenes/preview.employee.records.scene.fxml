@@ -4,18 +4,18 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.Pane?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="414.0" prefWidth="999.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.PreviewEmployeeRecordsController">
-   <children>
-      <TableView fx:id="employeeTable" editable="true" prefHeight="414.0" prefWidth="1000.0">
-         <columns>
-            <TableColumn fx:id="idColumn" prefWidth="144.0" text="ID" />
-            <TableColumn fx:id="firstNameColumn" prefWidth="144.0" text="First Name" />
-            <TableColumn fx:id="lastNameColumn" prefWidth="144.0" text="Last Name" />
-            <TableColumn fx:id="genderColumn" prefWidth="144.0" text="Gender" />
-            <TableColumn fx:id="dateOfBirthColumn" prefWidth="144.0" text="Date of Birth" />
-            <TableColumn fx:id="salaryColumn" prefWidth="144.0" text="Salary" />
-            <TableColumn fx:id="professionColumn" prefWidth="139.0" text="Profession" />
-         </columns>
-      </TableView>
-   </children>
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="414.0"
+      prefWidth="999.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="controllers.preview.PreviewEmployeeRecordsController">
+   <TableView fx:id="employeeTable" editable="true" prefHeight="414.0" prefWidth="1000.0">
+      <columns>
+         <TableColumn fx:id="idColumn" prefWidth="144.0" text="ID"/>
+         <TableColumn fx:id="firstNameColumn" prefWidth="144.0" text="First Name"/>
+         <TableColumn fx:id="lastNameColumn" prefWidth="144.0" text="Last Name"/>
+         <TableColumn fx:id="genderColumn" prefWidth="144.0" text="Gender"/>
+         <TableColumn fx:id="dateOfBirthColumn" prefWidth="144.0" text="Date of Birth"/>
+         <TableColumn fx:id="salaryColumn" prefWidth="144.0" text="Salary"/>
+         <TableColumn fx:id="professionColumn" prefWidth="139.0" text="Profession"/>
+      </columns>
+   </TableView>
 </Pane>

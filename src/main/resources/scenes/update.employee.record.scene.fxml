@@ -9,103 +9,115 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="430.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.UpdateEmployeeRecordController">
-    <children>
-        <Label layoutX="55.0" layoutY="31.0" prefHeight="32.0" prefWidth="698.0" text="Update Employee Record" textFill="#5e5e5e">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="430.0"
+      prefWidth="1000.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="controllers.update.UpdateEmployeeRecordController">
+    <Label layoutX="55.0" layoutY="31.0" prefHeight="32.0" prefWidth="698.0" text="Update Employee Record"
+           textFill="#5e5e5e">
+        <font>
+            <Font name="System Bold" size="18.0"/>
+        </font>
+    </Label>
+    <Label layoutX="63.0" layoutY="150.0" prefHeight="17.0" prefWidth="162.0" text="First Name">
+        <font>
+            <Font name="System Bold" size="12.0"/>
+        </font>
+    </Label>
+    <TextField fx:id="firstNameField" layoutX="64.0" layoutY="172.0" onAction="#previewRecord"
+               onKeyReleased="#previewRecord" onMouseClicked="#previewRecord"/>
+    <Label layoutX="225.0" layoutY="149.0" prefHeight="17.0" prefWidth="162.0" text="Last Name">
+        <font>
+            <Font name="System Bold" size="12.0"/>
+        </font>
+    </Label>
+    <TextField fx:id="lastNameField" layoutX="226.0" layoutY="171.0" onAction="#previewRecord"
+               onKeyReleased="#previewRecord" onMouseClicked="#previewRecord"/>
+    <Label layoutX="63.0" layoutY="213.0" prefHeight="17.0" prefWidth="162.0" text="Gender">
+        <font>
+            <Font name="System Bold" size="12.0"/>
+        </font>
+    </Label>
+    <ComboBox fx:id="genderComboBox" layoutX="63.0" layoutY="238.0" onAction="#previewRecord"
+              onKeyReleased="#previewRecord" onMouseClicked="#previewRecord" onMouseReleased="#previewRecord"
+              prefWidth="150.0" promptText="None Selected"/>
+    <Label layoutX="226.0" layoutY="213.0" prefHeight="17.0" prefWidth="162.0" text="Date of Birth">
+        <font>
+            <Font name="System Bold" size="12.0"/>
+        </font>
+    </Label>
+    <DatePicker fx:id="dateOfBirthField" layoutX="226.0" layoutY="239.0" onAction="#previewRecord"
+                onKeyReleased="#previewRecord" onMouseClicked="#previewRecord" prefHeight="25.0" prefWidth="150.0"/>
+    <Label layoutX="63.0" layoutY="279.0" prefHeight="17.0" prefWidth="162.0" text="Salary">
+        <font>
+            <Font name="System Bold" size="12.0"/>
+        </font>
+    </Label>
+    <TextField fx:id="salaryField" layoutX="64.0" layoutY="302.0" onAction="#previewRecord"
+               onKeyReleased="#previewRecord" onMouseClicked="#previewRecord"/>
+    <Label layoutX="225.0" layoutY="278.0" prefHeight="17.0" prefWidth="162.0" text="Profession">
+        <font>
+            <Font name="System Bold" size="12.0"/>
+        </font>
+    </Label>
+    <TextField fx:id="professionField" layoutX="226.0" layoutY="301.0" onAction="#previewRecord"
+               onKeyReleased="#previewRecord" onMouseClicked="#previewRecord"/>
+    <Button layoutX="794.0" layoutY="373.0" mnemonicParsing="false" onAction="#cancelCreateRecord" prefWidth="70.0"
+            text="Cancel"/>
+    <Button layoutX="881.0" layoutY="373.0" mnemonicParsing="false" onAction="#updateRecord" prefWidth="70.0"
+            text="Update"/>
+    <Label fx:id="errorLabel" layoutX="64.0" layoutY="338.0" prefHeight="25.0" prefWidth="341.0" textFill="RED"/>
+    <VBox fx:id="previewVBoxLeft" layoutX="557.0" layoutY="200.0" prefHeight="120.0" prefWidth="73.0" visible="false">
+        <Label prefHeight="17.0" prefWidth="61.0" text="firstName :"/>
+        <Label prefHeight="17.0" prefWidth="61.0" text="lastName : "/>
+        <Label prefHeight="17.0" prefWidth="49.0" text="gender :"/>
+        <Label prefHeight="17.0" prefWidth="71.0" text="dateOfBirth :"/>
+        <Label prefHeight="17.0" prefWidth="41.0" text="salary :"/>
+        <Label prefHeight="17.0" prefWidth="63.0" text="profession :"/>
+    </VBox>
+    <VBox fx:id="previewVBoxRight" layoutX="643.0" layoutY="200.0" prefHeight="120.0" prefWidth="276.0" visible="false">
+        <Label fx:id="firstNamePreviewLabel" prefHeight="17.0" prefWidth="210.0" text="&quot;&quot;"
+               textFill="#00ab17">
             <font>
-                <Font name="System Bold" size="18.0" />
+                <Font name="System Italic" size="12.0"/>
             </font>
         </Label>
-        <Label layoutX="63.0" layoutY="150.0" prefHeight="17.0" prefWidth="162.0" text="First Name">
+        <Label fx:id="lastNamePreviewLabel" prefHeight="17.0" prefWidth="210.0" text="&quot;&quot;"
+               textFill="#00ab17">
             <font>
-                <Font name="System Bold" size="12.0" />
+                <Font name="System Italic" size="12.0"/>
             </font>
         </Label>
-        <TextField fx:id="firstNameField" layoutX="64.0" layoutY="172.0" onAction="#previewRecord" onKeyReleased="#previewRecord" onMouseClicked="#previewRecord" />
-        <Label layoutX="225.0" layoutY="149.0" prefHeight="17.0" prefWidth="162.0" text="Last Name">
+        <Label fx:id="genderPreviewLabel" prefHeight="17.0" prefWidth="210.0" text="&quot;&quot;"
+               textFill="#00ab17">
             <font>
-                <Font name="System Bold" size="12.0" />
+                <Font name="System Italic" size="12.0"/>
             </font>
         </Label>
-        <TextField fx:id="lastNameField" layoutX="226.0" layoutY="171.0" onAction="#previewRecord" onKeyReleased="#previewRecord" onMouseClicked="#previewRecord" />
-        <Label layoutX="63.0" layoutY="213.0" prefHeight="17.0" prefWidth="162.0" text="Gender">
+        <Label fx:id="dateOfBirthPreviewLabel" prefHeight="17.0" prefWidth="210.0" textFill="#00a0b5">
             <font>
-                <Font name="System Bold" size="12.0" />
+                <Font name="System Italic" size="12.0"/>
             </font>
         </Label>
-        <ComboBox fx:id="genderComboBox" layoutX="63.0" layoutY="238.0" onAction="#previewRecord" onKeyReleased="#previewRecord" onMouseClicked="#previewRecord" onMouseReleased="#previewRecord" prefWidth="150.0" promptText="None Selected" />
-        <Label layoutX="226.0" layoutY="213.0" prefHeight="17.0" prefWidth="162.0" text="Date of Birth">
+        <Label fx:id="salaryPreviewLabel" prefHeight="17.0" prefWidth="210.0" textFill="#84a2b5">
             <font>
-                <Font name="System Bold" size="12.0" />
+                <Font name="System Italic" size="12.0"/>
             </font>
         </Label>
-        <DatePicker fx:id="dateOfBirthField" layoutX="226.0" layoutY="239.0" onAction="#previewRecord" onKeyReleased="#previewRecord" onMouseClicked="#previewRecord" prefHeight="25.0" prefWidth="150.0" />
-        <Label layoutX="63.0" layoutY="279.0" prefHeight="17.0" prefWidth="162.0" text="Salary">
+        <Label fx:id="professionPreviewLabel" prefHeight="17.0" prefWidth="210.0" text="&quot;&quot;"
+               textFill="#00ab17">
             <font>
-                <Font name="System Bold" size="12.0" />
+                <Font name="System Italic" size="12.0"/>
             </font>
         </Label>
-        <TextField fx:id="salaryField" layoutX="64.0" layoutY="302.0" onAction="#previewRecord" onKeyReleased="#previewRecord" onMouseClicked="#previewRecord" />
-        <Label layoutX="225.0" layoutY="278.0" prefHeight="17.0" prefWidth="162.0" text="Profession">
-            <font>
-                <Font name="System Bold" size="12.0" />
-            </font>
-        </Label>
-        <TextField fx:id="professionField" layoutX="226.0" layoutY="301.0" onAction="#previewRecord" onKeyReleased="#previewRecord" onMouseClicked="#previewRecord" />
-        <Button layoutX="794.0" layoutY="373.0" mnemonicParsing="false" onAction="#cancelCreateRecord" prefWidth="70.0" text="Cancel" />
-        <Button layoutX="881.0" layoutY="373.0" mnemonicParsing="false" onAction="#updateRecord" prefWidth="70.0" text="Update" />
-        <Label fx:id="errorLabel" layoutX="64.0" layoutY="338.0" prefHeight="25.0" prefWidth="341.0" textFill="RED" />
-        <VBox fx:id="previewVBoxLeft" layoutX="557.0" layoutY="200.0" prefHeight="120.0" prefWidth="73.0" visible="false">
-            <children>
-                <Label prefHeight="17.0" prefWidth="61.0" text="firstName :" />
-                <Label prefHeight="17.0" prefWidth="61.0" text="lastName : " />
-                <Label prefHeight="17.0" prefWidth="49.0" text="gender :" />
-                <Label prefHeight="17.0" prefWidth="71.0" text="dateOfBirth :" />
-                <Label prefHeight="17.0" prefWidth="41.0" text="salary :" />
-                <Label prefHeight="17.0" prefWidth="63.0" text="profession :" />
-            </children>
-        </VBox>
-        <VBox fx:id="previewVBoxRight" layoutX="643.0" layoutY="200.0" prefHeight="120.0" prefWidth="276.0" visible="false">
-            <children>
-                <Label fx:id="firstNamePreviewLabel" prefHeight="17.0" prefWidth="210.0" text="&quot;&quot;" textFill="#00ab17">
-                    <font>
-                        <Font name="System Italic" size="12.0" />
-                    </font>
-                </Label>
-                <Label fx:id="lastNamePreviewLabel" prefHeight="17.0" prefWidth="210.0" text="&quot;&quot;" textFill="#00ab17">
-                    <font>
-                        <Font name="System Italic" size="12.0" />
-                    </font>
-                </Label>
-                <Label fx:id="genderPreviewLabel" prefHeight="17.0" prefWidth="210.0" text="&quot;&quot;" textFill="#00ab17">
-                    <font>
-                        <Font name="System Italic" size="12.0" />
-                    </font>
-                </Label>
-                <Label fx:id="dateOfBirthPreviewLabel" prefHeight="17.0" prefWidth="210.0" textFill="#00a0b5">
-                    <font>
-                        <Font name="System Italic" size="12.0" />
-                    </font>
-                </Label>
-                <Label fx:id="salaryPreviewLabel" prefHeight="17.0" prefWidth="210.0" textFill="#84a2b5">
-                    <font>
-                        <Font name="System Italic" size="12.0" />
-                    </font>
-                </Label>
-                <Label fx:id="professionPreviewLabel" prefHeight="17.0" prefWidth="210.0" text="&quot;&quot;" textFill="#00ab17">
-                    <font>
-                        <Font name="System Italic" size="12.0" />
-                    </font>
-                </Label>
-            </children>
-        </VBox>
-      <Label layoutX="63.0" layoutY="86.0" prefHeight="17.0" prefWidth="162.0" text="Object ID">
-         <font>
-            <Font name="System Bold" size="12.0" />
-         </font>
-      </Label>
-      <TextField fx:id="objectIdField" layoutX="64.0" layoutY="108.0" prefHeight="25.0" prefWidth="308.0" />
-      <Button layoutX="388.0" layoutY="108.0" mnemonicParsing="false" onAction="#previewWrittenObject" prefHeight="25.0" prefWidth="104.0" text="Search" />
-      <Label fx:id="previewWrittenLabel" alignment="TOP_LEFT" layoutX="527.0" layoutY="41.0" prefHeight="108.0" prefWidth="424.0" textFill="#00ab17" wrapText="true" />
-    </children>
+    </VBox>
+    <Label layoutX="63.0" layoutY="86.0" prefHeight="17.0" prefWidth="162.0" text="Object ID">
+        <font>
+          <Font name="System Bold" size="12.0"/>
+        </font>
+    </Label>
+    <TextField fx:id="objectIdField" layoutX="64.0" layoutY="108.0" prefHeight="25.0" prefWidth="308.0"/>
+    <Button layoutX="388.0" layoutY="108.0" mnemonicParsing="false" onAction="#previewWrittenObject" prefHeight="25.0"
+            prefWidth="104.0" text="Search"/>
+    <Label fx:id="previewWrittenLabel" alignment="TOP_LEFT" layoutX="527.0" layoutY="41.0" prefHeight="108.0"
+           prefWidth="424.0" textFill="#00ab17" wrapText="true"/>
 </Pane>

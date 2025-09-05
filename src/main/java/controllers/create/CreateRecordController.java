@@ -1,4 +1,12 @@
-package controllers;
+/**
+ * Represents a CreateRecordController that takes care loading other create controllers to GUI
+ * This class provides methods load {@code Employee & Engagement} create controllers to GUI
+ * @author Luka Ivelić
+ * @version 1.0
+ * @since 2025-02-11
+ */
+
+package controllers.create;
 
 import database.DatabaseManager;
 import database.enums.Databases;
@@ -15,6 +23,9 @@ public class CreateRecordController {
     @FXML
     public Pane recordContentPane;
 
+    /**
+     * Prepares recordComboBox with collections in the database ready for selection
+     */
     public void initialize() {
         Thread myThread = new Thread(()->{
             DatabaseManager databaseManager = new DatabaseManager(Databases.EMPLOYEE_ENGAGEMENT_RECOGNITION.toString());
@@ -25,20 +36,17 @@ public class CreateRecordController {
         myThread.start();
     }
 
+    /**
+     * Loads the Login controller to handle login and loading to GUI
+     */
     public void loadCreator(){
         if(recordComboBox.getSelectionModel().getSelectedItem() == null){
             return;
         }
 
-        String title = recordComboBox.getSelectionModel().getSelectedItem();
-
-        ResourceManager.loadContent(filename(title), this).ifPresent(content->{
+        ResourceManager.loadContent("/scenes/login.scene.fxml", this).ifPresent(content ->{
             recordContentPane.getChildren().clear();
             recordContentPane.getChildren().add(content);
         });
-    }
-
-    private String filename(String rawTitle){
-        return String.format("/scenes/create.%s.record.scene.fxml", rawTitle);
     }
 }

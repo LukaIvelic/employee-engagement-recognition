@@ -1,4 +1,4 @@
-package controllers;
+package controllers.update;
 
 import database.DatabaseManager;
 import database.enums.Databases;
@@ -29,16 +29,10 @@ public class UpdateRecordController {
         if(recordComboBox.getSelectionModel().getSelectedItem() == null){
             return;
         }
-
-        String title = recordComboBox.getSelectionModel().getSelectedItem();
-
-        ResourceManager.loadContent(filename(title), this).ifPresent(content->{
+        ResourceManager.loadContent("/scenes/login.scene.fxml", this).ifPresent(content ->{
             recordContentPane.getChildren().clear();
             recordContentPane.getChildren().add(content);
         });
     }
 
-    private String filename(String rawTitle){
-        return String.format("/scenes/update.%s.record.scene.fxml", rawTitle);
-    }
 }

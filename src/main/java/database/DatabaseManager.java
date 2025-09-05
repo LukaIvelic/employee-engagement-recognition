@@ -24,7 +24,7 @@ import org.bson.types.ObjectId;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DatabaseManager implements DefaultDatabaseStructure {
+public final class DatabaseManager implements DefaultDatabaseStructure {
 
     public DatabaseInfo databaseCondition; //NOSONAR
     public MongoDatabase database; //NOSONAR
@@ -48,9 +48,9 @@ public class DatabaseManager implements DefaultDatabaseStructure {
      * Inserts a document into the collection if there is a given document and a collection name
      */
     public void insertDocument(Document document, String collectionName) {
-        databaseCondition = DatabaseInfo.UNAVAILABLE;
-        MongoCollection<Document> collection = database.getCollection(collectionName);
-        collection.insertOne(document);
+            databaseCondition = DatabaseInfo.UNAVAILABLE;
+            MongoCollection<Document> collection = database.getCollection(collectionName);
+            collection.insertOne(document);
     }
 
     /**

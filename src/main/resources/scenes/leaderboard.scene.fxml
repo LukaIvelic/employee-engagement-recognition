@@ -1,15 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="576.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
-   <children>
-      <Label layoutX="55.0" layoutY="31.0" prefHeight="46.0" prefWidth="698.0" text="Leaderboard">
-         <font>
-            <Font name="System Bold" size="36.0" />
-         </font>
-      </Label>
-   </children>
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="576.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.leaderboard.LeaderboardSceneController">
+   <Label layoutX="55.0" layoutY="31.0" prefHeight="46.0" prefWidth="698.0" text="Leaderboard">
+      <font>
+         <Font name="System Bold" size="36.0" />
+      </font>
+   </Label>
+   <Label layoutX="55.0" layoutY="95.0" prefHeight="25.0" prefWidth="397.0" text="List of all company employees sorted by hours spent working" />
+   <Separator layoutX="25.0" layoutY="141.0" prefHeight="0.0" prefWidth="950.0" />
+   <TableView fx:id="table" layoutY="169.0" prefHeight="409.0" prefWidth="1000.0">
+     <columns>
+       <TableColumn fx:id="firstName" prefWidth="330.0" text="First Name" />
+       <TableColumn fx:id="lastName" minWidth="0.0" prefWidth="330.0" text="Last Name" />
+         <TableColumn fx:id="hoursSpent" minWidth="0.0" prefWidth="330.0" text="Hours Spent" />
+     </columns>
+   </TableView>
 </Pane>

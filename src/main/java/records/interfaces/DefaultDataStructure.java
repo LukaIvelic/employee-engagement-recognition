@@ -9,8 +9,10 @@
 package records.interfaces;
 
 import org.bson.Document;
+import records.Employee;
+import records.Engagement;
 
-public interface DefaultDataStructure {
+public sealed interface DefaultDataStructure permits Employee, Engagement {
     /**
      * Forces the implementer class or interface to have a method to convert record to document
      */
@@ -25,6 +27,4 @@ public interface DefaultDataStructure {
     Document deleteDocument(String condition);
 
     String toString();
-
-
 }

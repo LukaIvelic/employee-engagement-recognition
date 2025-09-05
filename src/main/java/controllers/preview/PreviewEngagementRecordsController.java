@@ -1,4 +1,4 @@
-package controllers;
+package controllers.preview;
 
 import com.mongodb.client.MongoCollection;
 import database.DatabaseManager;
@@ -14,7 +14,6 @@ import org.bson.Document;
 import records.Engagement;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalUnit;
 
 public class PreviewEngagementRecordsController {
 
@@ -30,7 +29,7 @@ public class PreviewEngagementRecordsController {
     public void initialize() {
         idColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().objectId()));
         personIdColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().personId()));
-        timeAtWorkColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().timeAtWork().toString()));
+        timeAtWorkColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().timeAtWork().toHours() + " Hours"));
         loadAllRecords();
     }
 
@@ -48,16 +47,13 @@ public class PreviewEngagementRecordsController {
                     Engagement gottenEngagement = new Engagement(
                             document.get("_id").toString(),
                             document.get("personId").toString(),
-                            Duration.of(document.getInteger("timeAtWork"), ChronoUnit.HOURS)
+                            Duration.of(document.getLong("timeWorking"), ChronoUnit.HOURS)
                     );
                     engagements.add(gottenEngagement);
                 }
-
                 engagementTable.setItems(engagements);
                 databaseManager.mongoClient.close();
             } catch (Exception e) {
-                e.printStackTrace();
-                System.out.println(e.getMessage());
                 databaseManager.databaseCondition = DatabaseInfo.ERROR;
                 databaseManager.mongoClient.close();
             } finally {

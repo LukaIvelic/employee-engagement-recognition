@@ -1,4 +1,4 @@
-package controllers;
+package controllers.preview;
 
 import com.mongodb.client.MongoCollection;
 import database.DatabaseManager;
@@ -45,7 +45,6 @@ public class PreviewEmployeeRecordsController {
         dateOfBirthColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().dateOfBirth().toString()));
         salaryColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().salary().toString()));
         professionColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().profession()));
-
         loadAllRecords();
     }
 

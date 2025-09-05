@@ -1,16 +1,9 @@
-/**
- * Represents a CreateEmployeeRecordController that takes care of connecting JavaFX GUI with the backend
- * This class provides methods fetch {@code Employee} values from GUI and save it in a MongoDB database
- * @author Luka Ivelić
- * @version 1.0.1
- * @since 2025-02-09
- */
+package controllers.update;
 
-package controllers;
-
-import com.mongodb.client.MongoCollection;
 import database.DatabaseManager;
+import database.enums.DatabaseInfo;
 import database.enums.Databases;
+import generics.RecordManager;
 import handlers.InformationManager;
 import handlers.ResourceManager;
 import javafx.application.Platform;
@@ -23,15 +16,17 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import org.bson.Document;
+import org.bson.types.ObjectId;
 import records.Employee;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
-public class CreateEmployeeRecordController {
-
+public class UpdateEmployeeRecordController {
+    private static final String COLLECTION_NAME = "employee";
     private final ObservableList<String> genderList = FXCollections.observableArrayList("Male", "Female", "Other");
-
     @FXML
     private TextField firstNameField;
     @FXML
@@ -46,8 +41,6 @@ public class CreateEmployeeRecordController {
     private ComboBox<String> genderComboBox;
     @FXML
     private Label errorLabel;
-    @FXML
-    private Label previewLabel;
     @FXML
     private VBox previewVBoxLeft;
     @FXML
@@ -64,6 +57,10 @@ public class CreateEmployeeRecordController {
     private Label salaryPreviewLabel;
     @FXML
     private Label professionPreviewLabel;
+    @FXML
+    private TextField objectIdField;
+    @FXML
+    private Label previewWrittenLabel;
 
     /**
      * Sets the genderComboBox items with predefined values from genderList list variable
@@ -87,7 +84,6 @@ public class CreateEmployeeRecordController {
         Character gender = genderComboBox.getSelectionModel().getSelectedItem().substring(0, 1).toUpperCase().toCharArray()[0];
         LocalDate dateOfBirth = dateOfBirthField.getValue();
         BigDecimal salary = new BigDecimal(salaryField.getText());
-
         return new Employee(
                 "mongo_id",
                 firstNameField.getText(),
@@ -99,16 +95,38 @@ public class CreateEmployeeRecordController {
         );
     }
 
-    /**
-     * Checks the database if there's already an existing record written
-     * @return Boolean - true if there is more than 1 record that matches the employee given and false if there is not
-     */
-    private Boolean checkRecords(Employee employee) {
+    public synchronized void previewWrittenObject(){
         DatabaseManager databaseManager = new DatabaseManager(Databases.EMPLOYEE_ENGAGEMENT_RECOGNITION.toString());
-        MongoCollection<Document> collection = databaseManager.getCollection("employee");
-        boolean doesExist = collection.countDocuments(employee.getDocument()) > 0;
-        databaseManager.mongoClient.close();
-        return doesExist;
+        try{
+            databaseManager.databaseCondition = DatabaseInfo.UNAVAILABLE;
+            String writtenID = objectIdField.getText();
+            List<Document> documents = new ArrayList<>();
+            if(objectIdField.getText().isEmpty()){
+                errorLabel.setText("You haven't entered an ID");
+                return;
+            }else{
+                errorLabel.setText("");
+            }
+            databaseManager.getCollection(COLLECTION_NAME).find().into(documents);
+            boolean hasDocument = false;
+            for(Document document: documents){
+                if(document.getObjectId("_id").equals(new ObjectId(writtenID))){
+                    previewWrittenLabel.setText(document.toJson());
+                    hasDocument = true;
+                }
+            }
+            if(Boolean.FALSE.equals(hasDocument)){
+                errorLabel.setText("There isn't no such record in the database");
+            }
+            databaseManager.mongoClient.close();
+        } catch (Exception e) {
+            databaseManager.databaseCondition = DatabaseInfo.ERROR;
+            databaseManager.mongoClient.close();
+            errorLabel.setText("An error occurred");
+        } finally {
+            databaseManager.databaseCondition = DatabaseInfo.AVAILABLE;
+            databaseManager.mongoClient.close();
+        }
     }
 
     /**
@@ -116,22 +134,16 @@ public class CreateEmployeeRecordController {
      */
     public void previewRecord() {
         Thread myThread = new Thread(() -> {
-            previewLabel.setVisible(true);
             previewVBoxLeft.setVisible(true);
             previewVBoxRight.setVisible(true);
-
-            try{
-                Platform.runLater(() -> {
-                    firstNamePreviewLabel.setText("\""+firstNameField.getText()+"\"");
-                    lastNamePreviewLabel.setText("\""+lastNameField.getText()+"\"");
-                    salaryPreviewLabel.setText(salaryField.getText());
-                    professionPreviewLabel.setText("\""+professionField.getText()+"\"");
-                    dateOfBirthPreviewLabel.setText(dateOfBirthField.getValue() == null ? LocalDate.now().toString() : dateOfBirthField.getValue().toString());
-                    genderPreviewLabel.setText("\""+genderComboBox.getSelectionModel().getSelectedItem().substring(0, 1).toUpperCase()+"\"");
-                });
-            }catch (Exception e){
-
-            }
+            Platform.runLater(() -> {
+                firstNamePreviewLabel.setText("\""+firstNameField.getText()+"\"");
+                lastNamePreviewLabel.setText("\""+lastNameField.getText()+"\"");
+                salaryPreviewLabel.setText(salaryField.getText());
+                professionPreviewLabel.setText("\""+professionField.getText()+"\"");
+                dateOfBirthPreviewLabel.setText(dateOfBirthField.getValue() == null ? LocalDate.now().toString() : dateOfBirthField.getValue().toString());
+                genderPreviewLabel.setText("\""+genderComboBox.getSelectionModel().getSelectedItem().substring(0, 1).toUpperCase()+"\"");
+            });
         });
         myThread.start();
     }
@@ -139,13 +151,12 @@ public class CreateEmployeeRecordController {
     /**
      * Creates record and writes it to the database
      */
-    public void createRecord() {
+    public void updateRecord() {
         Thread myThread = new Thread(()->{
             DatabaseManager databaseManager = new DatabaseManager(Databases.EMPLOYEE_ENGAGEMENT_RECOGNITION.toString());
             Boolean isValid = InformationManager.checkEmployeeRecordInformationValidity(List.of(
                     firstNameField, lastNameField, salaryField, professionField, dateOfBirthField, genderComboBox
             ));
-
             if(Boolean.FALSE.equals(isValid)) {
                 Platform.runLater(()->{
                     errorLabel.setText("");
@@ -153,18 +164,16 @@ public class CreateEmployeeRecordController {
                 });
                 return;
             }
-            if(Boolean.TRUE.equals(checkRecords(getEmployee()))){
+            if(Boolean.TRUE.equals(RecordManager.checkRecords(getEmployee(), COLLECTION_NAME))){
                 Platform.runLater(()->{
                     errorLabel.setText("");
                     errorLabel.setText("There's already an employee with the exact information");
                 });
                 return;
             }
-
             Platform.runLater(()-> errorLabel.setText(""));
-
-            Employee employee = getEmployee();
-            databaseManager.insertDocument(employee.getDocument(), "employee");
+            Document documentToWrite = getEmployee().getDocument();
+            databaseManager.updateDocument(objectIdField.getText(), documentToWrite, COLLECTION_NAME);
             databaseManager.mongoClient.close();
         });
         myThread.start();
