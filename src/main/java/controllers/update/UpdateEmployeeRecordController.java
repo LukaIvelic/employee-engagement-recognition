@@ -1,5 +1,4 @@
 package controllers.update;
-
 import database.DatabaseManager;
 import database.enums.DatabaseInfo;
 import database.enums.Databases;
@@ -26,18 +25,11 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-
 public class UpdateEmployeeRecordController {
     private static final String COLLECTION_NAME = "employee";
     private final ObservableList<String> genderList = FXCollections.observableArrayList("Male", "Female", "Other");
     @FXML
-    private TextField firstNameField;
-    @FXML
-    private TextField lastNameField;
-    @FXML
-    private TextField salaryField;
-    @FXML
-    private TextField professionField;
+    private TextField firstNameField, lastNameField, salaryField, professionField;
     @FXML
     private DatePicker dateOfBirthField;
     @FXML
@@ -49,11 +41,7 @@ public class UpdateEmployeeRecordController {
     @FXML
     private VBox previewVBoxRight;
     @FXML
-    private Label firstNamePreviewLabel;
-    @FXML
-    private Label lastNamePreviewLabel;
-    @FXML
-    private Label genderPreviewLabel;
+    private Label firstNamePreviewLabel, lastNamePreviewLabel, genderPreviewLabel;
     @FXML
     private Label dateOfBirthPreviewLabel;
     @FXML
@@ -64,10 +52,8 @@ public class UpdateEmployeeRecordController {
     private TextField objectIdField;
     @FXML
     private Label previewWrittenLabel;
-
     static final String INFOLOGGER_PATH = "./logs/info.log.ser";
     static final String ERRORLOGGER_PATH = "./logs/error.log.ser";
-
     /**
      * Sets the genderComboBox items with predefined values from genderList list variable
      */
@@ -76,7 +62,6 @@ public class UpdateEmployeeRecordController {
         infoLogger.log("initialize() method called");
         genderComboBox.setItems(genderList);
     }
-
     /**
      * Cancels creating record GUI and returns to overview content Pane
      */
@@ -85,7 +70,6 @@ public class UpdateEmployeeRecordController {
         infoLogger.log("cancelCreateRecord() method called");
         ResourceManager.loadOverviewContent(this);
     }
-
     /**
      * Gets the values from JavaFX GUI and transforms it into an object that's readable to the backend
      * @return Employee a default record for all the employees
@@ -106,7 +90,6 @@ public class UpdateEmployeeRecordController {
                 professionField.getText()
         );
     }
-
     public synchronized void previewWrittenObject(){
         Logger infoLogger = new InfoLogger(INFOLOGGER_PATH);
         Logger errorLogger = new ErrorLogger(ERRORLOGGER_PATH);
@@ -149,7 +132,6 @@ public class UpdateEmployeeRecordController {
 
         }
     }
-
     /**
      * Used to preview what the record will look like when it is written in the database
      */
@@ -176,7 +158,6 @@ public class UpdateEmployeeRecordController {
         });
         myThread.start();
     }
-
     /**
      * Creates record and writes it to the database
      */

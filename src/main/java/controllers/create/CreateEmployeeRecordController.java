@@ -10,6 +10,7 @@ package controllers.create;
 
 import database.DatabaseManager;
 import database.enums.Databases;
+import generics.GenericsExample;
 import generics.RecordManager;
 import handlers.InformationManager;
 import handlers.ResourceManager;
@@ -118,7 +119,8 @@ public class CreateEmployeeRecordController {
                     genderPreviewLabel.setText("\""+genderComboBox.getSelectionModel().getSelectedItem().substring(0, 1).toUpperCase()+"\"");
                 });
             } catch (Exception e) {
-                errorLogger.log(e.getMessage());
+                GenericsExample<String, String> message = new GenericsExample<>("This is an example of using a two-generic-parameter class", e.getMessage());
+                errorLogger.log(message.toString());
             }
         });
         myThread.start();

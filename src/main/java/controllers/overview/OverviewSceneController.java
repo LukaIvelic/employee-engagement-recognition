@@ -5,9 +5,7 @@
  * @version 1.0
  * @since 2025-02-12
  */
-
 package controllers.overview;
-
 import com.mongodb.client.AggregateIterable;
 import com.mongodb.client.MongoCollection;
 import database.DatabaseManager;
@@ -30,15 +28,12 @@ import logging.Logger;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import java.util.List;
-
 public class OverviewSceneController {
-
     public record EmployeeAndEngagement(String firstName, String lastName, String timeWorking) {
         public String timeAtWork() {
             return this.timeWorking;
         }
     }
-
     @FXML
     private TableView<EmployeeAndEngagement> topEmployeeTable;
     @FXML
@@ -59,10 +54,8 @@ public class OverviewSceneController {
     private Label totalWorkHours;
     @FXML
     private BarChart<String, Long> workPerEmployeeChart;
-
     static final String INFOLOGGER_PATH = "./logs/info.log.ser";
     static final String ERRORLOGGER_PATH = "./logs/error.log.ser";
-
     public void initialize(){
         Logger infoLogger = new InfoLogger(INFOLOGGER_PATH);
         infoLogger.log("initialize() method called");
@@ -74,14 +67,12 @@ public class OverviewSceneController {
             firstNameColumnTopEmployees.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().firstName()));
             lastNameColumnTopEmployees.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().lastName()));
             hoursSpentColumnTopEmployees.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().timeAtWork()));
-
             firstNameColumnBurnouts.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().firstName()));
             lastNameColumnBurnouts.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().lastName()));
             hoursSpentColumnBurnouts.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().timeAtWork()));
         }));
         myThread.start();
     }
-
     private AggregateIterable<Document> getEmployeeCollection(){
         Logger infoLogger = new InfoLogger(INFOLOGGER_PATH);
         infoLogger.log("getEmployeeCollection() method called");
@@ -93,7 +84,6 @@ public class OverviewSceneController {
         );
         return employeeCollection.aggregate(List.of(employeeGroup));
     }
-
     private AggregateIterable<Document> getEngagementCollection(){
         Logger infoLogger = new InfoLogger(INFOLOGGER_PATH);
         infoLogger.log("getEngagementCollection() method called");
@@ -104,7 +94,6 @@ public class OverviewSceneController {
         );
         return engagementCollection.aggregate(List.of(engagementGroup));
     }
-
     public void getTopEmployees() {
         Logger infoLogger = new InfoLogger(INFOLOGGER_PATH);
         Logger errorLogger = new ErrorLogger(ERRORLOGGER_PATH);
@@ -124,7 +113,6 @@ public class OverviewSceneController {
         });
         myThread.start();
     }
-
     public void getBurnoutEmployees() {
         Logger infoLogger = new InfoLogger(INFOLOGGER_PATH);
         Logger errorLogger = new ErrorLogger(ERRORLOGGER_PATH);
@@ -137,14 +125,11 @@ public class OverviewSceneController {
                 ObservableList<EmployeeAndEngagement> list = FXCollections.observableArrayList(OverviewSceneResources.getBurnoutEmployees(engagements, employees));
                 Platform.runLater(()-> burnoutEmployeeTable.setItems(list));
                 databaseManager.mongoClient.close();
-            } catch (Exception e){
-                errorLogger.log(e.getMessage());
-            }
+            } catch (Exception e){ errorLogger.log(e.getMessage()); }
 
         });
         myThread.start();
     }
-
     public void autoRefresh(ActionEvent event) {
         Logger infoLogger = new InfoLogger(INFOLOGGER_PATH);
         Logger errorLogger = new ErrorLogger(ERRORLOGGER_PATH);
@@ -156,9 +141,7 @@ public class OverviewSceneController {
                     getTopEmployees();
                     getBurnoutEmployees();
                     calculateAverageMonthlyWorkHours();
-                    synchronized(this){
-                        wait(1000);
-                    }
+                    synchronized(this){ wait(1000); }
                 }catch (InterruptedException e){
                     Thread.currentThread().interrupt();
                     errorLogger.log(e.getMessage());
@@ -167,7 +150,6 @@ public class OverviewSceneController {
         });
         myThread.start();
     }
-
     public void calculateAverageMonthlyWorkHours() {
         Logger infoLogger = new InfoLogger(INFOLOGGER_PATH);
         Logger errorLogger = new ErrorLogger(ERRORLOGGER_PATH);
@@ -175,8 +157,7 @@ public class OverviewSceneController {
         Thread myThread = new Thread(() -> {
             try{
                 AggregateIterable<Document> engagements = getEngagementCollection();
-                Long sum = 0L;
-                long counter = 0L;
+                Long sum = 0L, counter = 0L;
                 for(Document engagement : engagements) {
                     sum+=engagement.getLong("timeWorking");
                     counter++;
@@ -190,7 +171,6 @@ public class OverviewSceneController {
         });
         myThread.start();
     }
-
     public void fillBarChart(){
         Logger infoLogger = new InfoLogger(INFOLOGGER_PATH);
         Logger errorLogger = new ErrorLogger(ERRORLOGGER_PATH);
