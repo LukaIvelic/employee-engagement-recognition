@@ -8,6 +8,8 @@
 
 package records;
 
+import logging.InfoLogger;
+import logging.Logger;
 import records.interfaces.DefaultDataStructure;
 import org.bson.Document;
 import java.math.BigDecimal;
@@ -22,7 +24,11 @@ public record Employee(String employeeId, String firstName, String lastName, Cha
     private static final String salaryField = "salary";
     private static final String professionField = "profession";
 
+    static final String INFOLOGGER_PATH = "./logs/info.log.ser";
+
     private Document toDocument() {
+        Logger infoLogger = new InfoLogger(INFOLOGGER_PATH);
+        infoLogger.log("toDocument() method called");
         return new Document()
                 .append(firstNameField, firstName())
                 .append(lastNameField, lastName())
@@ -34,11 +40,15 @@ public record Employee(String employeeId, String firstName, String lastName, Cha
 
     @Override
     public Document getDocument() {
+        Logger infoLogger = new InfoLogger(INFOLOGGER_PATH);
+        infoLogger.log("getDocument() method called");
         return toDocument();
     }
 
     @Override
     public Document updateDocument(String condition) {
+        Logger infoLogger = new InfoLogger(INFOLOGGER_PATH);
+        infoLogger.log("updateDocument() method called");
         Document update = new Document().append("$set", new Document()
                 .append(firstNameField, firstName())
                 .append(lastNameField, lastName())
@@ -53,17 +63,21 @@ public record Employee(String employeeId, String firstName, String lastName, Cha
 
     @Override
     public Document deleteDocument(String condition) {
+        Logger infoLogger = new InfoLogger(INFOLOGGER_PATH);
+        infoLogger.log("deleteDocument() method called");
         return Document.parse(condition);
     }
 
     @Override
     public String toString() {
+        Logger infoLogger = new InfoLogger(INFOLOGGER_PATH);
+        infoLogger.log("toString() method called");
         return "Employee[" +
-            firstName + ", " +
-            lastName + ", " +
-            gender + ", " +
-            dateOfBirth + ", " +
-            salary + ", " +
-            profession + "]";
+                firstName + ", " +
+                lastName + ", " +
+                gender + ", " +
+                dateOfBirth + ", " +
+                salary + ", " +
+                profession + "]";
     }
 }

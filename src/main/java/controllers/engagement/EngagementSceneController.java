@@ -20,6 +20,8 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.chart.PieChart;
 import javafx.scene.control.Label;
+import logging.ErrorLogger;
+import logging.Logger;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import java.util.List;
@@ -60,33 +62,39 @@ public class EngagementSceneController {
      * Collects data from database and stores it in a pie chart
      */
     public void fillPieChart() {
+        Logger errorLogger = new ErrorLogger("./logs/error.log.ser");
         Thread myThread = new Thread(()->{
-            List<OverviewSceneController.EmployeeAndEngagement> employeeAndEngagements = OverviewSceneResources.collectData(getEngagementCollection(), getEmployeeCollection());
+            try{
+                List<OverviewSceneController.EmployeeAndEngagement> employeeAndEngagements = OverviewSceneResources.collectData(getEngagementCollection(), getEmployeeCollection());
 
-            int countUnder0r100 = 0;
-            int counter100r200 = 0;
-            int counter200over = 0;
+                int countUnder0r100 = 0;
+                int counter100r200 = 0;
+                int counter200over = 0;
 
-            for (OverviewSceneController.EmployeeAndEngagement employeeAndEngagement : employeeAndEngagements) {
-                int timeWorkingValue = Integer.parseInt(employeeAndEngagement.timeAtWork());
-                if(timeWorkingValue <= 100) {
-                    countUnder0r100++;
-                    Platform.runLater(()->demotionZoneLabel.setText(demotionZoneLabel.getText() + " / " + employeeAndEngagement.firstName() + " " + employeeAndEngagement.lastName()));
+                for (OverviewSceneController.EmployeeAndEngagement employeeAndEngagement : employeeAndEngagements) {
+                    int timeWorkingValue = Integer.parseInt(employeeAndEngagement.timeAtWork());
+                    if(timeWorkingValue <= 100) {
+                        countUnder0r100++;
+                        Platform.runLater(()->demotionZoneLabel.setText(demotionZoneLabel.getText() + " / " + employeeAndEngagement.firstName() + " " + employeeAndEngagement.lastName()));
+                    }
+                    else if(timeWorkingValue <= 200) counter100r200++;
+                    else counter200over++;
                 }
-                else if(timeWorkingValue <= 200) counter100r200++;
-                else counter200over++;
+
+                ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList(
+                        new PieChart.Data("Employees Under 100", countUnder0r100),
+                        new PieChart.Data("Employees Between 100 and 200", counter100r200),
+                        new PieChart.Data("Employees Over 200", counter200over)
+                );
+
+                Platform.runLater(()->{
+                    pieChart.setData(pieChartData);
+                    pieChart.setTitle("Employee Hours Spent");
+                });
+            } catch (Exception e){
+                errorLogger.log(e.getMessage());
             }
 
-            ObservableList<PieChart.Data> pieChartData = FXCollections.observableArrayList(
-                    new PieChart.Data("Employees Under 100", countUnder0r100),
-                    new PieChart.Data("Employees Between 100 and 200", counter100r200),
-                    new PieChart.Data("Employees Over 200", counter200over)
-            );
-
-            Platform.runLater(()->{
-                pieChart.setData(pieChartData);
-                pieChart.setTitle("Employee Hours Spent");
-            });
         });
         myThread.start();
     }

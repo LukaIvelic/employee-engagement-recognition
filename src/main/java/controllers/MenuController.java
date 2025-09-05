@@ -12,6 +12,9 @@ import javafx.scene.control.MenuItem;
 import javafx.event.ActionEvent;
 import javafx.scene.layout.Pane;
 import launch.EmployeeEngagementRecognition;
+import logging.ErrorLogger;
+import logging.InfoLogger;
+import logging.Logger;
 
 public class MenuController {
     /**
@@ -19,6 +22,8 @@ public class MenuController {
      * @param rawTitle — the menu item name
      */
     private static String createFilename(String rawTitle){
+        Logger infoLogger = new InfoLogger("./logs/info.log.ser");
+        infoLogger.log("createFilename() method called");
         return "/scenes/" + rawTitle.replace(" ", ".").toLowerCase() + ".scene.fxml";
     }
 
@@ -27,14 +32,22 @@ public class MenuController {
      * @param event — is used for getting the sender of the event
      */
     public void changeContentProviderContent(ActionEvent event) {
+        Logger infoLogger = new InfoLogger("./logs/info.log.ser");
+        Logger errorLogger = new ErrorLogger("./logs/error.log.ser");
+        infoLogger.log("changeContentProviderContent() method called");
         MenuItem sender = (MenuItem) event.getSource();
         String filename = createFilename(sender.getText());
         EmployeeEngagementRecognition.primaryStage.setTitle("Employee Engagement Recognition | " + sender.getText());
         Pane rootPane = (Pane)EmployeeEngagementRecognition.primaryStage.getScene().getRoot();
         Pane contentPane =  (Pane)rootPane.getChildren().getLast();
-        ResourceManager.loadContent(filename, this).ifPresent(content -> {
-            contentPane.getChildren().clear();
-            contentPane.getChildren().add(content);
-        });
+        try{
+            ResourceManager.loadContent(filename, this).ifPresent(content -> {
+                contentPane.getChildren().clear();
+                contentPane.getChildren().add(content);
+            });
+        } catch (Exception e){
+            errorLogger.log(e.getMessage());
+        }
+
     }
 }

@@ -18,6 +18,8 @@ package launch;
 import handlers.ResourceManager;
 import javafx.application.Application;
 import javafx.stage.Stage;
+import logging.InfoLogger;
+import logging.Logger;
 
 public class EmployeeEngagementRecognition extends Application {
 
@@ -29,6 +31,9 @@ public class EmployeeEngagementRecognition extends Application {
      */
     @Override
     public void start(Stage stage) {
+        Logger infoLogger = new InfoLogger("./logs/info.log.ser");
+        infoLogger.log("Initialized stage");
+
         ResourceManager manager = new ResourceManager("/scenes/default.scene.fxml", this, stage);
         manager.loadStage().ifPresent(Stage::show);
         primaryStage = stage; //NOSONAR
@@ -39,5 +44,9 @@ public class EmployeeEngagementRecognition extends Application {
      * Provides an execution point for the application
      * @param args the application arguments after startup
      */
-    public static void main(String[] args) { launch(); }
+    public static void main(String[] args) {
+        Logger infoLogger = new InfoLogger("./logs/info.log.ser");
+        infoLogger.log("Started application");
+        launch();
+    }
 }

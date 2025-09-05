@@ -15,6 +15,9 @@ import com.mongodb.ServerApiVersion;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import handlers.ResourceManager;
+import logging.ErrorLogger;
+import logging.InfoLogger;
+import logging.Logger;
 
 import java.util.Properties;
 
@@ -23,6 +26,9 @@ public class MongoClientConnection {
      * Provides a MongoClient to establish a connection with the MongoDB database
      */
     public MongoClient getMongoClient() throws NullPointerException {
+        Logger infoLogger = new InfoLogger("./logs/info.log.ser");
+        Logger errorLogger = new ErrorLogger("./logs/error.log.ser");
+        infoLogger.log("getMongoClient() method called");
         Properties properties =  ResourceManager.loadProperties("/properties/database.properties", this);
 
         String connectionString = String.format(
@@ -35,12 +41,18 @@ public class MongoClientConnection {
         ServerApi serverApi = ServerApi.builder()
                 .version(ServerApiVersion.V1)
                 .build();
+        MongoClient mongoClient = null;
+        try{
+            MongoClientSettings settings = MongoClientSettings.builder()
+                    .applyConnectionString(new ConnectionString(connectionString))
+                    .serverApi(serverApi)
+                    .build();
 
-        MongoClientSettings settings = MongoClientSettings.builder()
-                .applyConnectionString(new ConnectionString(connectionString))
-                .serverApi(serverApi)
-                .build();
+            mongoClient = MongoClients.create(settings);
+        } catch (Exception e){
+            errorLogger.log(e.getMessage());
+        }
 
-        return MongoClients.create(settings);
+        return mongoClient;
     }
 }

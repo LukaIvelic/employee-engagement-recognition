@@ -18,6 +18,9 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
+import logging.ErrorLogger;
+import logging.InfoLogger;
+import logging.Logger;
 import records.Engagement;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
@@ -41,10 +44,14 @@ public class CreateEngagementRecordController {
     @FXML
     private Label previewLabel;
 
+    static final String INFOLOGGER_PATH = "./logs/info.log.ser";
+
     /**
      * Cancels creating record GUI and returns to overview content Pane
      */
     public void cancelCreateRecord() {
+        Logger infoLogger = new InfoLogger(INFOLOGGER_PATH);
+        infoLogger.log("Cancelled engagement record creation");
         ResourceManager.loadOverviewContent(this);
     }
 
@@ -53,6 +60,8 @@ public class CreateEngagementRecordController {
      * @return Engagement a default record for all engagements
      */
     private Engagement getEngagement() {
+        Logger infoLogger = new InfoLogger(INFOLOGGER_PATH);
+        infoLogger.log("Creating engagement object from input fields");
         return new Engagement(
                 "mongo_id",
                 personIdField.getText(),
@@ -64,14 +73,23 @@ public class CreateEngagementRecordController {
      * Used to preview what the record will look like when it is written in the database
      */
     public void previewRecord() {
+        Logger infoLogger = new InfoLogger(INFOLOGGER_PATH);
+        Logger errorLogger = new ErrorLogger("./logs/error.log.ser");
+        infoLogger.log("Previewing engagement record");
         previewLabel.setVisible(true);
         previewVBoxLeft.setVisible(true);
         previewVBoxRight.setVisible(true);
 
-        Thread myThread = new Thread(() -> Platform.runLater(() -> {
-            personIdPreviewLabel.setText("\""+personIdField.getText()+"\"");
-            hoursSpentPreviewLabel.setText("\""+hoursSpentField.getText()+"\"");
-        }));
+        Thread myThread = new Thread(() -> {
+            try {
+                Platform.runLater(() -> {
+                    personIdPreviewLabel.setText("\""+personIdField.getText()+"\"");
+                    hoursSpentPreviewLabel.setText("\""+hoursSpentField.getText()+"\"");
+                });
+            } catch (Exception e) {
+                errorLogger.log(e.getMessage());
+            }
+        });
         myThread.start();
     }
 
@@ -79,6 +97,9 @@ public class CreateEngagementRecordController {
      * Creates record and writes it to the database
      */
     public void createRecord() {
+        Logger infoLogger = new InfoLogger(INFOLOGGER_PATH);
+        Logger errorLogger = new ErrorLogger("./logs/error.log.ser");
+        infoLogger.log("Attempting to create engagement record");
         Thread myThread = new Thread(()->{
             DatabaseManager databaseManager = new DatabaseManager(Databases.EMPLOYEE_ENGAGEMENT_RECOGNITION.toString());
             Boolean isValid = InformationManager.checkEngagementRecordInformationValidity(List.of(
@@ -99,9 +120,13 @@ public class CreateEngagementRecordController {
                 return;
             }
             Platform.runLater(()-> errorLabel.setText(""));
-            Engagement engagement = getEngagement();
-            databaseManager.insertDocument(engagement.getDocument(), "engagement");
-            databaseManager.mongoClient.close();
+            try {
+                Engagement engagement = getEngagement();
+                databaseManager.insertDocument(engagement.getDocument(), "engagement");
+                databaseManager.mongoClient.close();
+            } catch (Exception e) {
+                errorLogger.log(e.getMessage());
+            }
         });
         myThread.start();
     }

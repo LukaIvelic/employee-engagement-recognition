@@ -10,6 +10,9 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import logging.ErrorLogger;
+import logging.InfoLogger;
+import logging.Logger;
 import org.bson.Document;
 import records.Employee;
 import java.math.BigDecimal;
@@ -38,6 +41,8 @@ public class PreviewEmployeeRecordsController {
      * Loads the employees into the JavaFX GUI upon initializing
      */
     public void initialize() {
+        Logger infoLogger = new InfoLogger("./logs/info.log.ser");
+        infoLogger.log("initialize() method called");
         idColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().employeeId()));
         firstNameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().firstName()));
         lastNameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().lastName()));
@@ -52,6 +57,9 @@ public class PreviewEmployeeRecordsController {
      * Loads the employees into the JavaFX GUI
      */
     public void loadAllRecords() {
+        Logger infoLogger = new InfoLogger("./logs/info.log.ser");
+        Logger errorLogger = new ErrorLogger("./logs/error.log.ser");
+        infoLogger.log("loadAllRecords() method called");
         Thread myThread = new Thread(() -> {
             DatabaseManager databaseManager = new DatabaseManager(Databases.EMPLOYEE_ENGAGEMENT_RECOGNITION.toString());
             try {
@@ -75,9 +83,15 @@ public class PreviewEmployeeRecordsController {
             } catch (Exception e) {
                 databaseManager.databaseCondition = DatabaseInfo.ERROR;
                 databaseManager.mongoClient.close();
+                errorLogger.log(e.getMessage());
             } finally {
                 databaseManager.databaseCondition = DatabaseInfo.AVAILABLE;
-                databaseManager.mongoClient.close();
+                try{
+                    databaseManager.mongoClient.close();
+                } catch (Exception e){
+                    errorLogger.log(e.getMessage());
+                }
+
             }
         });
         myThread.start();

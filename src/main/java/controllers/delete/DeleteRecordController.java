@@ -19,6 +19,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import logging.ErrorLogger;
+import logging.Logger;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 
@@ -35,6 +37,8 @@ public class DeleteRecordController {
     @FXML
     private Label errorLabel;
 
+    static final String ERRORLOGGER_PATH = "./logs/error.log.ser";
+
     /**
      * Calls the fillCollectionComboBox method
      */
@@ -46,6 +50,7 @@ public class DeleteRecordController {
      * Loads data from the database and displays it in JSON format in the JavaFX GUI
      */
     public void previewObject(){
+        Logger errorLogger = new ErrorLogger(ERRORLOGGER_PATH);
         DatabaseManager databaseManager = new DatabaseManager(Databases.EMPLOYEE_ENGAGEMENT_RECOGNITION.toString());
         try{
             databaseManager.databaseCondition = DatabaseInfo.UNAVAILABLE;
@@ -81,9 +86,15 @@ public class DeleteRecordController {
             databaseManager.databaseCondition = DatabaseInfo.ERROR;
             databaseManager.mongoClient.close();
             errorLabel.setText("An error occurred");
+            errorLogger.log(e.getMessage());
         } finally {
             databaseManager.databaseCondition = DatabaseInfo.AVAILABLE;
-            databaseManager.mongoClient.close();
+            try{
+                databaseManager.mongoClient.close();
+            } catch (Exception e){
+                errorLogger.log(e.getMessage());
+            }
+
         }
     }
 
@@ -91,6 +102,7 @@ public class DeleteRecordController {
      * Fills the collectionComboBox with the names of all the collections in the database
      */
     public void fillCollectionComboBox() {
+        Logger errorLogger = new ErrorLogger(ERRORLOGGER_PATH);
         Thread myThread = new Thread(()->{
             DatabaseManager databaseManager = new DatabaseManager(Databases.EMPLOYEE_ENGAGEMENT_RECOGNITION.toString());
             try {
@@ -101,9 +113,14 @@ public class DeleteRecordController {
             } catch (Exception e) {
                 databaseManager.databaseCondition = DatabaseInfo.ERROR;
                 databaseManager.mongoClient.close();
+                errorLogger.log(e.getMessage());
             } finally {
                 databaseManager.databaseCondition = DatabaseInfo.AVAILABLE;
-                databaseManager.mongoClient.close();
+                try{
+                    databaseManager.mongoClient.close();
+                } catch (Exception e){
+                    errorLogger.log(e.getMessage());
+                }
             }
         });
         myThread.start();
@@ -113,6 +130,7 @@ public class DeleteRecordController {
      * Deletes a record from the collection based on the ID given
      */
     public void deleteRecord() {
+        Logger errorLogger = new ErrorLogger(ERRORLOGGER_PATH);
         if(collectionComboBox.getSelectionModel().getSelectedItem() == null){
             errorLabel.setText("You haven't selected a collection");
             return;
@@ -125,8 +143,13 @@ public class DeleteRecordController {
         Thread myThread = new Thread(()->{
             DatabaseManager databaseManager = new DatabaseManager(Databases.EMPLOYEE_ENGAGEMENT_RECOGNITION.toString());
             databaseManager.databaseCondition = DatabaseInfo.UNAVAILABLE;
-            MongoCollection<Document> collection = databaseManager.getCollection(collectionComboBox.getSelectionModel().getSelectedItem());
-            collection.deleteOne(new Document("_id", new ObjectId(objectIdTextField.getText())));
+            try{
+                MongoCollection<Document> collection = databaseManager.getCollection(collectionComboBox.getSelectionModel().getSelectedItem());
+                collection.deleteOne(new Document("_id", new ObjectId(objectIdTextField.getText())));
+            } catch (Exception e){
+                errorLogger.log(e.getMessage());
+            }
+
         });
         myThread.start();
         ResourceManager.loadOverviewContent(this);

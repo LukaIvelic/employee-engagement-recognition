@@ -1,6 +1,8 @@
 package controllers.overview;
 
 import com.mongodb.client.AggregateIterable;
+import logging.InfoLogger;
+import logging.Logger;
 import org.bson.Document;
 
 import java.util.ArrayList;
@@ -10,9 +12,14 @@ import static controllers.overview.OverviewSceneController.EmployeeAndEngagement
 
 public class OverviewSceneResources {
 
+    static final String INFOLOGGER_PATH = "./logs/info.log.ser";
+
+
     private OverviewSceneResources(){}
 
     public static synchronized List<EmployeeAndEngagement> collectData(AggregateIterable<Document> engagements, AggregateIterable<Document> employees) {
+        Logger infoLogger = new InfoLogger(INFOLOGGER_PATH);
+        infoLogger.log("collectData() method called");
         List<EmployeeAndEngagement> employeeAndEngagementListToSort = new ArrayList<>();
         for(Document engagement : engagements) {
             for(Document employee : employees) {
@@ -31,6 +38,8 @@ public class OverviewSceneResources {
     }
 
     public static synchronized List<EmployeeAndEngagement> getTopEmployees(AggregateIterable<Document> engagements, AggregateIterable<Document> employees) {
+        Logger infoLogger = new InfoLogger(INFOLOGGER_PATH);
+        infoLogger.log("getTopEmployees() method called");
         return collectData(engagements, employees).stream()
                 .sorted(Comparator.comparing(a -> Integer.valueOf(((EmployeeAndEngagement)a).timeAtWork())).reversed())
                 .limit(5)
@@ -38,6 +47,8 @@ public class OverviewSceneResources {
     }
 
     public static synchronized List<EmployeeAndEngagement> getBurnoutEmployees(AggregateIterable<Document> engagements, AggregateIterable<Document> employees) {
+        Logger infoLogger = new InfoLogger(INFOLOGGER_PATH);
+        infoLogger.log("getBurnoutEmployees() method called");
         return collectData(engagements, employees).stream()
                 .sorted(Comparator.comparing(a -> Integer.valueOf(((EmployeeAndEngagement)a).timeAtWork())).reversed())
                 .filter(value -> Integer.parseInt(value.timeWorking())>= 150)

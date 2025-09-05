@@ -11,6 +11,9 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
+import logging.ErrorLogger;
+import logging.InfoLogger;
+import logging.Logger;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 import records.Engagement;
@@ -39,10 +42,15 @@ public class UpdateEngagementRecordController {
     @FXML
     private Label previewWrittenLabel;
 
+    static final String INFOLOGGER_PATH = "./logs/info.log.ser";
+    static final String ERRORLOGGER_PATH = "./logs/error.log.ser";
+
     /**
      * Cancels creating record GUI and returns to overview content Pane
      */
     public void cancelCreateRecord() {
+        Logger infoLogger = new InfoLogger(INFOLOGGER_PATH);
+        infoLogger.log("cancelCreateRecord() method called");
         ResourceManager.loadOverviewContent(this);
     }
 
@@ -51,6 +59,8 @@ public class UpdateEngagementRecordController {
      * @return Engagement a default record for all engagements
      */
     private Engagement getEngagement() {
+        Logger infoLogger = new InfoLogger(INFOLOGGER_PATH);
+        infoLogger.log("getEngagement() method called");
         return new Engagement(
                 "mongo_id",
                 personIdField.getText(),
@@ -59,6 +69,9 @@ public class UpdateEngagementRecordController {
     }
 
     public synchronized void previewWrittenObject(){
+        Logger infoLogger = new InfoLogger(INFOLOGGER_PATH);
+        Logger errorLogger = new ErrorLogger(ERRORLOGGER_PATH);
+        infoLogger.log("previewWrittenObject() method called");
         DatabaseManager databaseManager = new DatabaseManager(Databases.EMPLOYEE_ENGAGEMENT_RECOGNITION.toString());
         try{
             databaseManager.databaseCondition = DatabaseInfo.UNAVAILABLE;
@@ -86,9 +99,15 @@ public class UpdateEngagementRecordController {
             databaseManager.databaseCondition = DatabaseInfo.ERROR;
             databaseManager.mongoClient.close();
             errorLabel.setText("An error occurred");
+            errorLogger.log(e.getMessage());
         } finally {
             databaseManager.databaseCondition = DatabaseInfo.AVAILABLE;
-            databaseManager.mongoClient.close();
+            try{
+                databaseManager.mongoClient.close();
+            } catch (Exception e){
+                errorLogger.log(e.getMessage());
+            }
+
         }
     }
 
@@ -96,13 +115,21 @@ public class UpdateEngagementRecordController {
      * Used to preview what the record will look like when it is written in the database
      */
     public void previewRecord() {
+        Logger infoLogger = new InfoLogger(INFOLOGGER_PATH);
+        Logger errorLogger = new ErrorLogger(ERRORLOGGER_PATH);
+        infoLogger.log("previewRecord() method called");
         Thread myThread = new Thread(() -> {
-            previewVBoxLeft.setVisible(true);
-            previewVBoxRight.setVisible(true);
-            Platform.runLater(() -> {
-                personIdPreviewLabel.setText("\""+personIdField.getText()+"\"");
-                hoursSpentPreviewLabel.setText("\""+hoursSpentField.getText()+"\"");
-            });
+            try{
+                previewVBoxLeft.setVisible(true);
+                previewVBoxRight.setVisible(true);
+                Platform.runLater(() -> {
+                    personIdPreviewLabel.setText("\""+personIdField.getText()+"\"");
+                    hoursSpentPreviewLabel.setText("\""+hoursSpentField.getText()+"\"");
+                });
+            } catch (Exception e){
+                errorLogger.log(e.getMessage());
+            }
+
         });
         myThread.start();
     }
@@ -111,6 +138,9 @@ public class UpdateEngagementRecordController {
      * Creates record and writes it to the database
      */
     public void updateRecord() {
+        Logger infoLogger = new InfoLogger(INFOLOGGER_PATH);
+        Logger errorLogger = new ErrorLogger(ERRORLOGGER_PATH);
+        infoLogger.log("updateRecord() method called");
         Thread myThread = new Thread(()->{
             DatabaseManager databaseManager = new DatabaseManager(Databases.EMPLOYEE_ENGAGEMENT_RECOGNITION.toString());
             Boolean isValid = InformationManager.checkEngagementRecordInformationValidity(List.of(
@@ -131,9 +161,14 @@ public class UpdateEngagementRecordController {
                 return;
             }
             Platform.runLater(()-> errorLabel.setText(""));
-            Document documentToWrite = getEngagement().getDocument();
-            databaseManager.updateDocument(objectIdField.getText(), documentToWrite, Databases.Collections.ENGAGEMENT.toString());
-            databaseManager.mongoClient.close();
+            try{
+                Document documentToWrite = getEngagement().getDocument();
+                databaseManager.updateDocument(objectIdField.getText(), documentToWrite, Databases.Collections.ENGAGEMENT.toString());
+                databaseManager.mongoClient.close();
+            } catch (Exception e){
+                errorLogger.log(e.getMessage());
+            }
+
         });
         myThread.start();
     }

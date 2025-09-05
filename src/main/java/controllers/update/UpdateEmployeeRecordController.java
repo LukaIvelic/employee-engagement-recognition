@@ -15,6 +15,9 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
+import logging.ErrorLogger;
+import logging.InfoLogger;
+import logging.Logger;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 import records.Employee;
@@ -62,10 +65,15 @@ public class UpdateEmployeeRecordController {
     @FXML
     private Label previewWrittenLabel;
 
+    static final String INFOLOGGER_PATH = "./logs/info.log.ser";
+    static final String ERRORLOGGER_PATH = "./logs/error.log.ser";
+
     /**
      * Sets the genderComboBox items with predefined values from genderList list variable
      */
     public void initialize() {
+        Logger infoLogger = new InfoLogger(INFOLOGGER_PATH);
+        infoLogger.log("initialize() method called");
         genderComboBox.setItems(genderList);
     }
 
@@ -73,6 +81,8 @@ public class UpdateEmployeeRecordController {
      * Cancels creating record GUI and returns to overview content Pane
      */
     public void cancelCreateRecord() {
+        Logger infoLogger = new InfoLogger(INFOLOGGER_PATH);
+        infoLogger.log("cancelCreateRecord() method called");
         ResourceManager.loadOverviewContent(this);
     }
 
@@ -81,6 +91,8 @@ public class UpdateEmployeeRecordController {
      * @return Employee a default record for all the employees
      */
     private Employee getEmployee() {
+        Logger infoLogger = new InfoLogger(INFOLOGGER_PATH);
+        infoLogger.log("getEmployee() method called");
         Character gender = genderComboBox.getSelectionModel().getSelectedItem().substring(0, 1).toUpperCase().toCharArray()[0];
         LocalDate dateOfBirth = dateOfBirthField.getValue();
         BigDecimal salary = new BigDecimal(salaryField.getText());
@@ -96,6 +108,9 @@ public class UpdateEmployeeRecordController {
     }
 
     public synchronized void previewWrittenObject(){
+        Logger infoLogger = new InfoLogger(INFOLOGGER_PATH);
+        Logger errorLogger = new ErrorLogger(ERRORLOGGER_PATH);
+        infoLogger.log("previewWrittenObject() method called");
         DatabaseManager databaseManager = new DatabaseManager(Databases.EMPLOYEE_ENGAGEMENT_RECOGNITION.toString());
         try{
             databaseManager.databaseCondition = DatabaseInfo.UNAVAILABLE;
@@ -123,9 +138,15 @@ public class UpdateEmployeeRecordController {
             databaseManager.databaseCondition = DatabaseInfo.ERROR;
             databaseManager.mongoClient.close();
             errorLabel.setText("An error occurred");
+            errorLogger.log(e.getMessage());
         } finally {
             databaseManager.databaseCondition = DatabaseInfo.AVAILABLE;
-            databaseManager.mongoClient.close();
+            try{
+                databaseManager.mongoClient.close();
+            } catch (Exception e){
+                errorLogger.log(e.getMessage());
+            }
+
         }
     }
 
@@ -133,17 +154,25 @@ public class UpdateEmployeeRecordController {
      * Used to preview what the record will look like when it is written in the database
      */
     public void previewRecord() {
+        Logger infoLogger = new InfoLogger(INFOLOGGER_PATH);
+        Logger errorLogger = new ErrorLogger(ERRORLOGGER_PATH);
+        infoLogger.log("previewRecord() method called");
         Thread myThread = new Thread(() -> {
-            previewVBoxLeft.setVisible(true);
-            previewVBoxRight.setVisible(true);
-            Platform.runLater(() -> {
-                firstNamePreviewLabel.setText("\""+firstNameField.getText()+"\"");
-                lastNamePreviewLabel.setText("\""+lastNameField.getText()+"\"");
-                salaryPreviewLabel.setText(salaryField.getText());
-                professionPreviewLabel.setText("\""+professionField.getText()+"\"");
-                dateOfBirthPreviewLabel.setText(dateOfBirthField.getValue() == null ? LocalDate.now().toString() : dateOfBirthField.getValue().toString());
-                genderPreviewLabel.setText("\""+genderComboBox.getSelectionModel().getSelectedItem().substring(0, 1).toUpperCase()+"\"");
-            });
+            try{
+                previewVBoxLeft.setVisible(true);
+                previewVBoxRight.setVisible(true);
+                Platform.runLater(() -> {
+                    firstNamePreviewLabel.setText("\""+firstNameField.getText()+"\"");
+                    lastNamePreviewLabel.setText("\""+lastNameField.getText()+"\"");
+                    salaryPreviewLabel.setText(salaryField.getText());
+                    professionPreviewLabel.setText("\""+professionField.getText()+"\"");
+                    dateOfBirthPreviewLabel.setText(dateOfBirthField.getValue() == null ? LocalDate.now().toString() : dateOfBirthField.getValue().toString());
+                    genderPreviewLabel.setText("\""+genderComboBox.getSelectionModel().getSelectedItem().substring(0, 1).toUpperCase()+"\"");
+                });
+            } catch (Exception e){
+                errorLogger.log(e.getMessage());
+            }
+
         });
         myThread.start();
     }
@@ -152,6 +181,9 @@ public class UpdateEmployeeRecordController {
      * Creates record and writes it to the database
      */
     public void updateRecord() {
+        Logger infoLogger = new InfoLogger(INFOLOGGER_PATH);
+        Logger errorLogger = new ErrorLogger(ERRORLOGGER_PATH);
+        infoLogger.log("updateRecord() method called");
         Thread myThread = new Thread(()->{
             DatabaseManager databaseManager = new DatabaseManager(Databases.EMPLOYEE_ENGAGEMENT_RECOGNITION.toString());
             Boolean isValid = InformationManager.checkEmployeeRecordInformationValidity(List.of(
@@ -172,9 +204,14 @@ public class UpdateEmployeeRecordController {
                 return;
             }
             Platform.runLater(()-> errorLabel.setText(""));
-            Document documentToWrite = getEmployee().getDocument();
-            databaseManager.updateDocument(objectIdField.getText(), documentToWrite, COLLECTION_NAME);
-            databaseManager.mongoClient.close();
+            try{
+                Document documentToWrite = getEmployee().getDocument();
+                databaseManager.updateDocument(objectIdField.getText(), documentToWrite, COLLECTION_NAME);
+                databaseManager.mongoClient.close();
+            } catch (Exception e){
+                errorLogger.log(e.getMessage());
+            }
+
         });
         myThread.start();
     }

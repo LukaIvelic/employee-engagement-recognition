@@ -22,6 +22,8 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
+import logging.ErrorLogger;
+import logging.Logger;
 import records.Employee;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -100,19 +102,24 @@ public class CreateEmployeeRecordController {
      * Used to preview what the record will look like when it is written in the database
      */
     public void previewRecord() {
+        Logger errorLogger = new ErrorLogger("./logs/error.log.ser");
         Thread myThread = new Thread(() -> {
-            previewLabel.setVisible(true);
-            previewVBoxLeft.setVisible(true);
-            previewVBoxRight.setVisible(true);
+            try {
+                previewLabel.setVisible(true);
+                previewVBoxLeft.setVisible(true);
+                previewVBoxRight.setVisible(true);
 
-            Platform.runLater(() -> {
-                firstNamePreviewLabel.setText("\""+firstNameField.getText()+"\"");
-                lastNamePreviewLabel.setText("\""+lastNameField.getText()+"\"");
-                salaryPreviewLabel.setText(salaryField.getText());
-                professionPreviewLabel.setText("\""+professionField.getText()+"\"");
-                dateOfBirthPreviewLabel.setText(dateOfBirthField.getValue() == null ? LocalDate.now().toString() : dateOfBirthField.getValue().toString());
-                genderPreviewLabel.setText("\""+genderComboBox.getSelectionModel().getSelectedItem().substring(0, 1).toUpperCase()+"\"");
-            });
+                Platform.runLater(() -> {
+                    firstNamePreviewLabel.setText("\""+firstNameField.getText()+"\"");
+                    lastNamePreviewLabel.setText("\""+lastNameField.getText()+"\"");
+                    salaryPreviewLabel.setText(salaryField.getText());
+                    professionPreviewLabel.setText("\""+professionField.getText()+"\"");
+                    dateOfBirthPreviewLabel.setText(dateOfBirthField.getValue() == null ? LocalDate.now().toString() : dateOfBirthField.getValue().toString());
+                    genderPreviewLabel.setText("\""+genderComboBox.getSelectionModel().getSelectedItem().substring(0, 1).toUpperCase()+"\"");
+                });
+            } catch (Exception e) {
+                errorLogger.log(e.getMessage());
+            }
         });
         myThread.start();
     }
@@ -121,6 +128,7 @@ public class CreateEmployeeRecordController {
      * Creates record and writes it to the database
      */
     public void createRecord() {
+        Logger errorLogger = new ErrorLogger("./logs/error.log.ser");
         Thread myThread = new Thread(()->{
             DatabaseManager databaseManager = new DatabaseManager(Databases.EMPLOYEE_ENGAGEMENT_RECOGNITION.toString());
             Boolean isValid = InformationManager.checkEmployeeRecordInformationValidity(List.of(
@@ -141,9 +149,14 @@ public class CreateEmployeeRecordController {
                 return;
             }
             Platform.runLater(()-> errorLabel.setText(""));
-            Employee employee = getEmployee();
-            databaseManager.insertDocument(employee.getDocument(), Databases.Collections.EMPLOYEE.toString());
-            databaseManager.mongoClient.close();
+            try{
+                Employee employee = getEmployee();
+                databaseManager.insertDocument(employee.getDocument(), Databases.Collections.EMPLOYEE.toString());
+                databaseManager.mongoClient.close();
+            } catch (Exception e) {
+                errorLogger.log(e.getMessage());
+            }
+
         });
         myThread.start();
     }

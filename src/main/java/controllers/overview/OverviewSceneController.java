@@ -24,6 +24,9 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.ToggleButton;
+import logging.ErrorLogger;
+import logging.InfoLogger;
+import logging.Logger;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import java.util.List;
@@ -57,7 +60,12 @@ public class OverviewSceneController {
     @FXML
     private BarChart<String, Long> workPerEmployeeChart;
 
+    static final String INFOLOGGER_PATH = "./logs/info.log.ser";
+    static final String ERRORLOGGER_PATH = "./logs/error.log.ser";
+
     public void initialize(){
+        Logger infoLogger = new InfoLogger(INFOLOGGER_PATH);
+        infoLogger.log("initialize() method called");
         getTopEmployees();
         getBurnoutEmployees();
         calculateAverageMonthlyWorkHours();
@@ -75,6 +83,8 @@ public class OverviewSceneController {
     }
 
     private AggregateIterable<Document> getEmployeeCollection(){
+        Logger infoLogger = new InfoLogger(INFOLOGGER_PATH);
+        infoLogger.log("getEmployeeCollection() method called");
         DatabaseManager databaseManager = new DatabaseManager(Databases.EMPLOYEE_ENGAGEMENT_RECOGNITION.toString());
         MongoCollection<Document> employeeCollection = databaseManager.getCollection(Databases.Collections.EMPLOYEE.toString());
         Bson employeeGroup = new Document("$group", new Document("_id", "$_id")
@@ -85,6 +95,8 @@ public class OverviewSceneController {
     }
 
     private AggregateIterable<Document> getEngagementCollection(){
+        Logger infoLogger = new InfoLogger(INFOLOGGER_PATH);
+        infoLogger.log("getEngagementCollection() method called");
         DatabaseManager databaseManager = new DatabaseManager(Databases.EMPLOYEE_ENGAGEMENT_RECOGNITION.toString());
         MongoCollection<Document> engagementCollection = databaseManager.getCollection(Databases.Collections.ENGAGEMENT.toString());
         Bson engagementGroup = new Document("$group", new Document("_id", "$personId")
@@ -94,30 +106,49 @@ public class OverviewSceneController {
     }
 
     public void getTopEmployees() {
+        Logger infoLogger = new InfoLogger(INFOLOGGER_PATH);
+        Logger errorLogger = new ErrorLogger(ERRORLOGGER_PATH);
+        infoLogger.log("getTopEmployees() method called");
         Thread myThread = new Thread(() -> {
-            DatabaseManager databaseManager = new DatabaseManager(Databases.EMPLOYEE_ENGAGEMENT_RECOGNITION.toString());
-            AggregateIterable<Document> engagements = getEngagementCollection();
-            AggregateIterable<Document> employees = getEmployeeCollection();
-            ObservableList<EmployeeAndEngagement> list = FXCollections.observableArrayList(OverviewSceneResources.getTopEmployees(engagements, employees));
-            Platform.runLater(()-> topEmployeeTable.setItems(list));
-            databaseManager.mongoClient.close();
+            try{
+                DatabaseManager databaseManager = new DatabaseManager(Databases.EMPLOYEE_ENGAGEMENT_RECOGNITION.toString());
+                AggregateIterable<Document> engagements = getEngagementCollection();
+                AggregateIterable<Document> employees = getEmployeeCollection();
+                ObservableList<EmployeeAndEngagement> list = FXCollections.observableArrayList(OverviewSceneResources.getTopEmployees(engagements, employees));
+                Platform.runLater(()-> topEmployeeTable.setItems(list));
+                databaseManager.mongoClient.close();
+            } catch (Exception e){
+                errorLogger.log(e.getMessage());
+            }
+
         });
         myThread.start();
     }
 
     public void getBurnoutEmployees() {
+        Logger infoLogger = new InfoLogger(INFOLOGGER_PATH);
+        Logger errorLogger = new ErrorLogger(ERRORLOGGER_PATH);
+        infoLogger.log("getBurnoutEmployees() method called");
         Thread myThread = new Thread(() -> {
-            DatabaseManager databaseManager = new DatabaseManager(Databases.EMPLOYEE_ENGAGEMENT_RECOGNITION.toString());
-            AggregateIterable<Document> engagements = getEngagementCollection();
-            AggregateIterable<Document> employees = getEmployeeCollection();
-            ObservableList<EmployeeAndEngagement> list = FXCollections.observableArrayList(OverviewSceneResources.getBurnoutEmployees(engagements, employees));
-            Platform.runLater(()-> burnoutEmployeeTable.setItems(list));
-            databaseManager.mongoClient.close();
+            try{
+                DatabaseManager databaseManager = new DatabaseManager(Databases.EMPLOYEE_ENGAGEMENT_RECOGNITION.toString());
+                AggregateIterable<Document> engagements = getEngagementCollection();
+                AggregateIterable<Document> employees = getEmployeeCollection();
+                ObservableList<EmployeeAndEngagement> list = FXCollections.observableArrayList(OverviewSceneResources.getBurnoutEmployees(engagements, employees));
+                Platform.runLater(()-> burnoutEmployeeTable.setItems(list));
+                databaseManager.mongoClient.close();
+            } catch (Exception e){
+                errorLogger.log(e.getMessage());
+            }
+
         });
         myThread.start();
     }
 
     public void autoRefresh(ActionEvent event) {
+        Logger infoLogger = new InfoLogger(INFOLOGGER_PATH);
+        Logger errorLogger = new ErrorLogger(ERRORLOGGER_PATH);
+        infoLogger.log("autoRefresh() method called");
         Thread myThread = new Thread(() -> {
             ToggleButton sender = (ToggleButton)event.getSource();
             while (Boolean.TRUE.equals(sender.isSelected())){
@@ -130,6 +161,7 @@ public class OverviewSceneController {
                     }
                 }catch (InterruptedException e){
                     Thread.currentThread().interrupt();
+                    errorLogger.log(e.getMessage());
                 }
             }
         });
@@ -137,33 +169,49 @@ public class OverviewSceneController {
     }
 
     public void calculateAverageMonthlyWorkHours() {
+        Logger infoLogger = new InfoLogger(INFOLOGGER_PATH);
+        Logger errorLogger = new ErrorLogger(ERRORLOGGER_PATH);
+        infoLogger.log("calculateAverageMonthlyWorkHours() method called");
         Thread myThread = new Thread(() -> {
-           AggregateIterable<Document> engagements = getEngagementCollection();
-           Long sum = 0L;
-           long counter = 0L;
-           for(Document engagement : engagements) {
-               sum+=engagement.getLong("timeWorking");
-               counter++;
-           }
-           long average = sum/counter;
-           Platform.runLater(()-> totalWorkHours.setText(average + " hours / month"));
+            try{
+                AggregateIterable<Document> engagements = getEngagementCollection();
+                Long sum = 0L;
+                long counter = 0L;
+                for(Document engagement : engagements) {
+                    sum+=engagement.getLong("timeWorking");
+                    counter++;
+                }
+                long average = sum/counter;
+                Platform.runLater(()-> totalWorkHours.setText(average + " hours / month"));
+            } catch (Exception e){
+                errorLogger.log(e.getMessage());
+            }
+
         });
         myThread.start();
     }
 
     public void fillBarChart(){
+        Logger infoLogger = new InfoLogger(INFOLOGGER_PATH);
+        Logger errorLogger = new ErrorLogger(ERRORLOGGER_PATH);
+        infoLogger.log("fillBarChart() method called");
         workPerEmployeeChart.getData().clear();
         Thread myThread = new Thread(() -> {
-            List<EmployeeAndEngagement> barChartData = OverviewSceneResources.collectData(getEngagementCollection(), getEmployeeCollection());
-            XYChart.Series<String, Long> series = new XYChart.Series<>();
-            series.setName("Hours Spent");
-            for(EmployeeAndEngagement employeeAndEngagement : barChartData){
-                series.getData().add(new XYChart.Data<>(employeeAndEngagement.lastName, Long.parseLong(employeeAndEngagement.timeWorking)));
+            try{
+                List<EmployeeAndEngagement> barChartData = OverviewSceneResources.collectData(getEngagementCollection(), getEmployeeCollection());
+                XYChart.Series<String, Long> series = new XYChart.Series<>();
+                series.setName("Hours Spent");
+                for(EmployeeAndEngagement employeeAndEngagement : barChartData){
+                    series.getData().add(new XYChart.Data<>(employeeAndEngagement.lastName, Long.parseLong(employeeAndEngagement.timeWorking)));
+                }
+                Platform.runLater(()->{
+                    workPerEmployeeChart.getData().clear();
+                    workPerEmployeeChart.getData().add(series);
+                });
+            } catch (Exception e){
+                errorLogger.log(e.getMessage());
             }
-            Platform.runLater(()->{
-                workPerEmployeeChart.getData().clear();
-                workPerEmployeeChart.getData().add(series);
-            });
+
         });
         myThread.start();
     }

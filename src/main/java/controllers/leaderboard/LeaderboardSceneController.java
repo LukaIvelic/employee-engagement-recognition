@@ -22,6 +22,8 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import logging.ErrorLogger;
+import logging.Logger;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 
@@ -71,13 +73,19 @@ public class LeaderboardSceneController {
      * Fills the leaderboard table with the data from the database
      */
     public void fillLeaderboardTable(){
+        Logger errorLogger = new ErrorLogger("./logs/error.log.ser");
         Thread myThread = new Thread(() -> {
-            ObservableList<OverviewSceneController.EmployeeAndEngagement> list = FXCollections.observableArrayList(OverviewSceneResources.collectData(getEngagementCollection(), getEmployeeCollection()));
-            Platform.runLater(()->{
-                table.setItems(FXCollections.observableArrayList(list));
-                table.getSortOrder().add(hoursSpent);
-                hoursSpent.setSortType(TableColumn.SortType.DESCENDING);
-            });
+            try{
+                ObservableList<OverviewSceneController.EmployeeAndEngagement> list = FXCollections.observableArrayList(OverviewSceneResources.collectData(getEngagementCollection(), getEmployeeCollection()));
+                Platform.runLater(()->{
+                    table.setItems(FXCollections.observableArrayList(list));
+                    table.getSortOrder().add(hoursSpent);
+                    hoursSpent.setSortType(TableColumn.SortType.DESCENDING);
+                });
+            } catch (Exception e){
+                errorLogger.log(e.getMessage());
+            }
+
         });
         myThread.start();
     }

@@ -23,9 +23,13 @@ import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
+import logging.InfoLogger;
+import logging.Logger;
+
 import java.util.List;
 
 public class InformationManager {
+    static final String INFOLOGGER_PATH = "./logs/info.log.ser";
 
     private InformationManager(){}
 
@@ -34,6 +38,8 @@ public class InformationManager {
      * @param information a list with all the nodes to check
      */
     public static Boolean checkEmployeeRecordInformationValidity(List<Node> information) {
+        Logger infoLogger = new InfoLogger(INFOLOGGER_PATH);
+        infoLogger.log("checkEmployeeRecordInformationValidity() method called");
         boolean isValid = true;
         for(Node node : information) {
             if(node instanceof TextField textField && Boolean.FALSE.equals(isTextFieldValid(textField, false))) {
@@ -54,6 +60,8 @@ public class InformationManager {
      * @param textField a JavaFX component with text
      */
     public static Boolean isTextFieldValid(TextField textField, Boolean allowMixed) {
+        Logger infoLogger = new InfoLogger(INFOLOGGER_PATH);
+        infoLogger.log("isTextFieldValid() method called");
         String text = textField.getText();
         try {
             if(Boolean.TRUE.equals(allowMixed)) {
@@ -61,7 +69,7 @@ public class InformationManager {
             }else{
                 return text.matches("^\\s*(?:[\\p{L},.\\s]+|\\d+[,. ]*)\\s*$");
             }
-        } catch (Exception e) {
+        } catch (Exception _) {
             return Boolean.FALSE;
         }
     }
@@ -71,9 +79,11 @@ public class InformationManager {
      * @param comboBox a JavaFX component with options
      */
     public static Boolean isComboBoxValid(ComboBox<?> comboBox) {
+        Logger infoLogger = new InfoLogger(INFOLOGGER_PATH);
+        infoLogger.log("isComboBoxValid() method called");
         try {
             return comboBox.getSelectionModel().getSelectedItem() != null;
-        } catch (Exception e) {
+        } catch (Exception _) {
             return Boolean.FALSE;
         }
     }
@@ -83,14 +93,18 @@ public class InformationManager {
      * @param datePicker a JavaFX component with date selection
      */
     public static Boolean isDatePickerValid(DatePicker datePicker) {
+        Logger infoLogger = new InfoLogger(INFOLOGGER_PATH);
+        infoLogger.log("isDatePickerValid() method called");
         try {
             return datePicker.getValue().toString().matches("^\\d{4}-\\d{2}-\\d{2}$");
-        } catch (Exception e) {
+        } catch (Exception _) {
             return Boolean.FALSE;
         }
     }
 
     public static Boolean checkEngagementRecordInformationValidity(List<TextField> information) {
+        Logger infoLogger = new InfoLogger(INFOLOGGER_PATH);
+        infoLogger.log("checkEngagementRecordInformationValidity() method called");
         boolean isValid = true;
         for(TextField textField : information) {
             if(Boolean.FALSE.equals(isTextFieldValid(textField, true))) {
